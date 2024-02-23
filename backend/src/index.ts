@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from "express";
 const app: Express = express();
-const port = 3001
+require('dotenv').config()
+const port = process.env.PORT || 3001
 
 // gRPC imports
 const grpc = require('@grpc/grpc-js');
@@ -20,7 +21,7 @@ const loaderOptions = {
 const packageDefinition = protoLoader.loadSync('lightning.proto', loaderOptions);
 
 // Load lnd macaroon
-let m = fs.readFileSync('<PATH TO MACAROON>');
+let m = fs.readFileSync(`${process.env.ADMIN_MACAROON}`);
 let macaroon = m.toString('hex');
 
 // Build meta data credentials
@@ -31,18 +32,27 @@ let macaroonCreds = grpc.credentials.createFromMetadataGenerator((_args, callbac
 });
 
 // Combine credentials
-let lndCert = fs.readFileSync('<PATH TO TLS CERT>');
+let lndCert = fs.readFileSync(process.env.TLS_CERT);
 let sslCreds = grpc.credentials.createSsl(lndCert);
 let credentials = grpc.credentials.combineChannelCredentials(sslCreds, macaroonCreds);
 
 // Create client
 let lnrpcDescriptor = grpc.loadPackageDefinition(packageDefinition);
 let lnrpc = lnrpcDescriptor.lnrpc;
-let client = new lnrpc.Lightning('<HOST>:<PORT>', credentials);
+let client = new lnrpc.Lightning(`${process.env.LND_GRPC_HOST}:${process.env.LND_GRPC_PORT}`, credentials);
 
 app.get("/", (req: Request, res: Response) => {
   console.log(`${req.method} ${req.path} `)
   res.send("Express + TypeScript Server");
+});
+
+app.get("/get-info", function (req: Request, res: Response) {
+  client.getInfo({}, function(err, response) {
+    if (err) {
+      console.log('Error: ' + err);
+    }
+    res.json(response);
+  });
 });
 
 app.listen(port, () => {
