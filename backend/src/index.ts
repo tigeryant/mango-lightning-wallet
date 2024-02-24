@@ -1,59 +1,61 @@
+import cors from 'cors';
 import express, { Express, Request, Response } from "express";
-const app: Express = express();
+import * as routes from './routes';
+
 require('dotenv').config()
 const port = process.env.PORT || 3001
+const app: Express = express();
 
-// gRPC imports
-const grpc = require('@grpc/grpc-js');
-const protoLoader = require('@grpc/proto-loader');
-const fs = require("fs");
+// Create express server
+app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(express.json());
 
-process.env.GRPC_SSL_CIPHER_SUITES = 'HIGH+ECDSA'
+// simple middleware to grab the token from the header and add
+// it to the request's body
+// app.use((req, res, next) => {
+//   req.body.token = req.header('X-Token');
+//   next();
+// });
 
-const loaderOptions = {
-  keepCase: true,
-  longs: String,
-  enums: String,
-  defaults: true,
-  oneofs: true
+/**
+ * ExpressJS will hang if an async route handler doesn't catch errors and return a response.
+ * To avoid wrapping every handler in try/catch, just call this func on the handler. It will
+ * catch any async errors and return
+ */
+export const catchAsyncErrors = (
+  routeHandler: (req: Request, res: Response) => Promise<void> | void,
+) => {
+  // return a function that wraps the route handler in a try/catch block and
+  // sends a response on error
+  return async (req: Request, res: Response) => {
+    try {
+      const promise = routeHandler(req, res);
+      // only await promises from async handlers.
+      if (promise) await promise;
+    } catch (err: any) {
+      res.status(400).send({ error: err.message });
+    }
+  };
 };
 
-const packageDefinition = protoLoader.loadSync('lightning.proto', loaderOptions);
-
-// Load lnd macaroon
-let m = fs.readFileSync(`${process.env.ADMIN_MACAROON}`);
-let macaroon = m.toString('hex');
-
-// Build meta data credentials
-let metadata = new grpc.Metadata()
-metadata.add('macaroon', macaroon)
-let macaroonCreds = grpc.credentials.createFromMetadataGenerator((_args, callback) => {
-  callback(null, metadata);
-});
-
-// Combine credentials
-let lndCert = fs.readFileSync(process.env.TLS_CERT);
-let sslCreds = grpc.credentials.createSsl(lndCert);
-let credentials = grpc.credentials.combineChannelCredentials(sslCreds, macaroonCreds);
-
-// Create client
-let lnrpcDescriptor = grpc.loadPackageDefinition(packageDefinition);
-let lnrpc = lnrpcDescriptor.lnrpc;
-let client = new lnrpc.Lightning(`${process.env.LND_GRPC_HOST}:${process.env.LND_GRPC_PORT}`, credentials);
+//
+// Configure Routes
+//
+app.post('/api/connect', catchAsyncErrors(routes.connect));
 
 app.get("/", (req: Request, res: Response) => {
   console.log(`${req.method} ${req.path} `)
   res.send("Express + TypeScript Server");
 });
 
-app.get("/get-info", function (req: Request, res: Response) {
-  client.getInfo({}, function(err, response) {
-    if (err) {
-      console.log('Error: ' + err);
-    }
-    res.json(response);
-  });
-});
+// app.get("/get-info", function (req: Request, res: Response) {
+//   client.getInfo({}, function(err, response) {
+//     if (err) {
+//       console.log('Error: ' + err);
+//     }
+//     res.json(response);
+//   });
+// });
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
