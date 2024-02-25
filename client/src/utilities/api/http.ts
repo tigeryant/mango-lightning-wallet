@@ -1,22 +1,4 @@
 import axios from "axios";
-
-export async function postProject(floorplan: string) {
-  try {
-    // console.log('Posting project to DB - (this is a dummy and has not triggered an API call)')
-    // return
-    const floorplanJson = JSON.parse(floorplan);
-    const projectData = {
-      name: "7-terraform-test",
-      userId: 1,
-      floorplan: floorplanJson,
-    };
-    await axios.post(process.env.REACT_APP_WRITE_PROJECT_API!, projectData);
-  } catch (error: any) {
-    // console.error(error.response.data.error)
-    console.error("Error:", error);
-  }
-}
-
 //
 // Shared axios wrapper funcs
 //
@@ -48,7 +30,6 @@ export async function connect(host: string, cert: string, macaroon: string) {
   const { token } = await httpPost("/connect", request);
   alert(`Connected - token: ${token}`);
 
-  // const { token } = await httpPost('connect', request);
   // save the token into the browser's storage
   // setToken(token);
 }

@@ -12,7 +12,6 @@ function App() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // add proper error handling
     connect(host, cert, macaroon);
   };
 
