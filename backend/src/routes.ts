@@ -64,8 +64,6 @@ export const getInfo = async (req: Request, res: Response) => {
   // get the node's pubkey and alias
   const rpc = nodeManager.getRpc(node.token);
   const { alias, identityPubkey: pubkey } = await rpc.getInfo();
-  const balanceObj = await rpc.channelBalance();
-  console.log(`balanceObj: ${JSON.stringify(balanceObj)}`)
   const { balance } = await rpc.channelBalance();
   res.send({ alias, balance, pubkey });
 };
