@@ -12,10 +12,10 @@ app.use(express.json());
 
 // simple middleware to grab the token from the header and add
 // it to the request's body
-// app.use((req, res, next) => {
-//   req.body.token = req.header('X-Token');
-//   next();
-// });
+app.use((req, res, next) => {
+  req.body.token = req.header('X-Token');
+  next();
+});
 
 /**
  * ExpressJS will hang if an async route handler doesn't catch errors and return a response.
@@ -42,20 +42,12 @@ export const catchAsyncErrors = (
 // Configure Routes
 //
 app.post('/api/connect', catchAsyncErrors(routes.connect));
+app.get('/api/info', catchAsyncErrors(routes.getInfo));
 
 app.get("/", (req: Request, res: Response) => {
   console.log(`${req.method} ${req.path} `)
   res.send("Express + TypeScript Server");
 });
-
-// app.get("/get-info", function (req: Request, res: Response) {
-//   client.getInfo({}, function(err, response) {
-//     if (err) {
-//       console.log('Error: ' + err);
-//     }
-//     res.json(response);
-//   });
-// });
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
