@@ -9,4 +9,13 @@ export async function channelBalance() {
   await grpc.connect()
 
   console.log(`connected grpc.state: ${grpc.state}`) // active|locked
+
+  // Make some api calls...
+const { Lightning, Autopilot, Invoices } = grpc.services
+// Fetch current balance.
+const balanceObj = await Lightning.channelBalance()
+console.log(`balanceObj: ${JSON.stringify(balanceObj)}`)
+
+// Disconnect from all services.
+await grpc.disconnect()
 }
