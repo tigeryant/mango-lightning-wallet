@@ -44,6 +44,8 @@ export const catchAsyncErrors = (
 app.post('/api/connect', catchAsyncErrors(routes.connect));
 app.get('/api/info', catchAsyncErrors(routes.getInfo));
 
+app.get('/api/test-channel-balance', catchAsyncErrors(routes.testChannelBalance));
+
 app.get("/", (req: Request, res: Response) => {
   console.log(`${req.method} ${req.path} `)
   res.send("Express + TypeScript Server");
