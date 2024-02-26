@@ -41,7 +41,7 @@ export const getInfo = async (req: Request, res: Response) => {
   if (!token) throw new Error("Your node is not connected!");
   // find the node that's making the request
   // use .find to retrieve a 'node' element from a .json file
-
+  
   let data = ''
   try {
     // reading a JSON file synchronously
@@ -49,7 +49,7 @@ export const getInfo = async (req: Request, res: Response) => {
   } catch (error) {
     // logging the error
     console.error(error);
-  
+    
     throw error;
   }
   
@@ -57,13 +57,14 @@ export const getInfo = async (req: Request, res: Response) => {
   // should turn this into an array somehow
   const nodes = JSON.parse(data);
   const node = nodes.find((node) => node.token === token)
-
+  
   // const node = db.getNodeByToken(token);
   if (!node) throw new Error("Node not found with this token");
-
+  
   // get the node's pubkey and alias
-  const rpc = nodeManager.getRpc(node.token);
-  const { alias, identityPubkey: pubkey } = await rpc.getInfo();
-  const { balance } = await rpc.channelBalance();
+  const grpc = nodeManager.getRpc(node.token);
+  const { Lightning} = grpc.services;
+  const { alias, identityPubkey: pubkey } = await Lightning.getInfo();
+  const { balance } = await Lightning.channelBalance();
   res.send({ alias, balance, pubkey });
 };
