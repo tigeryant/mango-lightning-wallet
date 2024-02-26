@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import nodeManager from "./node-manager";
 const path = require("path");
 import * as fs from "fs";
-import { channelBalance } from './test/channelBalance'
 
 /**
  * POST /api/connect
@@ -33,13 +32,6 @@ export const connect = async (req: Request, res: Response) => {
   }
   res.send({ token });
 };
-
-export async function testChannelBalance(req: Request, res: Response) {
-  // const { host, cert, macaroon } = req.body;
-  // channelBalance(host, cert, macaroon)
-  await channelBalance()
-  res.sendStatus(200)
-}
 
 /**
  * GET /api/info
