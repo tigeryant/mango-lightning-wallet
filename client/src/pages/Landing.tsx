@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Counter from "../components/Counter";
 
 const Landing = () => {
   return (
@@ -8,6 +9,7 @@ const Landing = () => {
       <Link to="/signin" className="border border-black rounded-lg">
         Sign up or Login
       </Link>
+      <Counter />
     </div>
   );
 };
