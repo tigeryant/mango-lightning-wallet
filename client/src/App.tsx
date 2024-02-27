@@ -1,62 +1,22 @@
-import React, { useState } from "react";
-import { connect } from "./utilities/api/http";
-// import { fetchInfo } from './utilities/utils'
-import { getInfo } from './utilities/api/http'
+import { Route, Routes, Navigate } from "react-router-dom";
+// import ConnectForm from "./components/forms/ConnectForm";
+import Landing from './pages/Landing'
+import SignIn from "./pages/SignIn";
+import Connect from "./pages/Connect";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
-  // const [host, setHost] = useState<string>("");
-  // const [cert, setCert] = useState<string>("");
-  // const [macaroon, setMacaroon] = useState<string>("");
-
-  const [host, setHost] = useState<string>("127.0.0.1:10004");
-  const [cert, setCert] = useState<string>("/Users/john/.polar/networks/2/volumes/lnd/bob/tls.cert");
-  const [macaroon, setMacaroon] = useState<string>("0201036c6e640267030a10d81e5394c4ce2bae069ba1c70387473f1201301a0c0a04696e666f1204726561641a170a08696e766f69636573120472656164120577726974651a160a076d657373616765120472656164120577726974651a100a086f6666636861696e1204726561640000062084d0cfc04f53f83ecccd723f413fb4792c271cebf3c12c994e9cd7a02380f4c4");
-
-  const [alias, setAlias] = useState<string>('')
-  const [balance, setBalance] = useState<number | undefined>(undefined)
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    await connect(host, cert, macaroon);
-    // move this to redux thunk or similar
-    const { alias, balance } = await getInfo()
-    setAlias(alias)
-    setBalance(parseInt(balance))
-  };
-
   return (
     <div className="w-full h-screen flex justify-center items-center">
-      <form
-        className="lg:w-[50%] w-[80%] h-[80%] border border-black rounded-lg flex flex-col px-[5%] pt-[5%]"
-        onSubmit={handleSubmit}
-      >
-        <label>Host</label>
-        <input
-          className="border border-neutral-300 rounded-lg mb-[30px]"
-          onChange={(e) => setHost(e.target.value)}
-          defaultValue="127.0.0.1:10004"
-        ></input>
-        <label>TLS Certificate</label>
-        <textarea
-          className="h-[200px] border border-neutral-300 rounded-lg mb-[30px]"
-          onChange={(e) => setCert(e.target.value)}
-          defaultValue="/Users/john/.polar/networks/2/volumes/lnd/bob/tls.cert"
-        ></textarea>
-        <label>Macaroon</label>
-        <input
-          className="border border-neutral-300 rounded-lg mb-[30px]"
-          onChange={(e) => setMacaroon(e.target.value)}
-          defaultValue='0201036c6e640267030a10d81e5394c4ce2bae069ba1c70387473f1201301a0c0a04696e666f1204726561641a170a08696e766f69636573120472656164120577726974651a160a076d657373616765120472656164120577726974651a100a086f6666636861696e1204726561640000062084d0cfc04f53f83ecccd723f413fb4792c271cebf3c12c994e9cd7a02380f4c4'
-        ></input>
-        <button
-          className="bg-orange-500 py-[5px] px-[20px] rounded-lg text-white ml-auto w-fit"
-          type="submit"
-        >
-          Connect
-        </button>
-        <p>Node alias: {alias}</p>
-        <p>Channel balance: {balance}</p>
-      </form>
+      <Routes>
+        <Route path="/*">
+          <Route index element={<Navigate to="landing" />} />
+          <Route path="landing" element={<Landing />} />
+          <Route path="signin" element={<SignIn />} />
+          <Route path="connect" element={<Connect />} />
+          <Route path="dashboard" element={<Dashboard />} />
+        </Route>
+      </Routes>
     </div>
   );
 }
