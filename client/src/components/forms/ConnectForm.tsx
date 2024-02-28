@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { connect, getInfo } from "../../utilities/api/http";
-// import { fetchInfo } from './utilities/utils'
+import { useNavigate } from "react-router-dom";
+import { useConnectMutation } from "../../features/api/apiSlice";
 
 const ConnectForm = () => {
   // const [host, setHost] = useState<string>("");
   // const [cert, setCert] = useState<string>("");
   // const [macaroon, setMacaroon] = useState<string>("");
+  const navigate = useNavigate();
 
   const [host, setHost] = useState<string>("127.0.0.1:10004");
   const [cert, setCert] = useState<string>(
@@ -15,16 +16,16 @@ const ConnectForm = () => {
     "0201036c6e640267030a10d81e5394c4ce2bae069ba1c70387473f1201301a0c0a04696e666f1204726561641a170a08696e766f69636573120472656164120577726974651a160a076d657373616765120472656164120577726974651a100a086f6666636861696e1204726561640000062084d0cfc04f53f83ecccd723f413fb4792c271cebf3c12c994e9cd7a02380f4c4"
   );
 
-  const [alias, setAlias] = useState<string>("");
-  const [balance, setBalance] = useState<number | undefined>(undefined);
+  const [ connect ] = useConnectMutation()
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    await connect(host, cert, macaroon);
-    // move this to redux thunk or similar
-    const { alias, balance } = await getInfo();
-    setAlias(alias);
-    setBalance(parseInt(balance));
+    try {
+      await connect({ host, cert, macaroon }).unwrap();
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("error", error);
+    }
   }
 
   return (
@@ -56,8 +57,6 @@ const ConnectForm = () => {
       >
         Connect
       </button>
-      <p>Node alias: {alias}</p>
-      <p>Channel balance: {balance}</p>
     </form>
   );
 };

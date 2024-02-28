@@ -1,5 +1,4 @@
 import { Route, Routes, Navigate } from "react-router-dom";
-// import ConnectForm from "./components/forms/ConnectForm";
 import Landing from './pages/Landing'
 import SignIn from "./pages/SignIn";
 import Connect from "./pages/Connect";
