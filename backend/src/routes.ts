@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import nodeManager from "./node-manager";
-const path = require("path");
-import * as fs from "fs";
+import { getNodeByToken } from "./databaseUtils/getNodeByToken";
+import writeNodeToDb from "./databaseUtils/writeNodeToDb";
 
 /**
  * POST /api/connect
@@ -12,25 +12,9 @@ export const connect = async (req: Request, res: Response) => {
   // we need to write some patch to bridge this functionality
   // await db.addNode({ host, cert, macaroon, token, pubkey });
 
-  // the .json file path
-  const JSON_FILE = path.resolve(__dirname, "../data/nodes.json")
+  writeNodeToDb({ host, cert, macaroon, token, pubkey })
 
-  try {
-    // reading the JSON file
-    const jsonData = fs.readFileSync(JSON_FILE);
-
-    // parsing the JSON content
-    const nodes = JSON.parse(jsonData.toString())
-    nodes.push({ "host": host, "cert": cert, "macaroon": macaroon, "token": token, "pubkey": pubkey })
-
-    // updating the JSON file
-    fs.writeFileSync(JSON_FILE, JSON.stringify(nodes));
-  } catch (error) {
-    // change to throw new
-    console.error(error);
-    throw error;
-  }
-  res.send({ token });
+  res.status(200).send({ token });
 };
 
 /**
@@ -38,33 +22,38 @@ export const connect = async (req: Request, res: Response) => {
  */
 export const getInfo = async (req: Request, res: Response) => {
   const { token } = req.body;
-  if (!token) throw new Error("Your node is not connected!");
-  // find the node that's making the request
-  // use .find to retrieve a 'node' element from a .json file
-  
-  let data = ''
-  try {
-    // reading a JSON file synchronously
-    data = fs.readFileSync(path.resolve(__dirname, "../data/nodes.json")).toString();
-  } catch (error) {
-    // logging the error
-    console.error(error);
-    
-    throw error;
+  if (!token){
+    throw new Error('No token was sent in the request - node is not connected')
   }
   
-  // parsing the JSON content
-  // should turn this into an array somehow
-  const nodes = JSON.parse(data);
-  const node = nodes.find((node) => node.token === token)
-  
-  // const node = db.getNodeByToken(token);
-  if (!node) throw new Error("Node not found with this token");
+  // get node instance
+  const node = getNodeByToken(token)
   
   // get the node's pubkey and alias
   const grpc = nodeManager.getRpc(node.token);
-  const { Lightning} = grpc.services;
+  const { Lightning } = grpc.services;
   const { alias, identityPubkey: pubkey } = await Lightning.getInfo();
   const { balance } = await Lightning.channelBalance();
-  res.send({ alias, balance, pubkey });
+  res.status(200).send({ alias, balance, pubkey });
 };
+
+/**
+ * GET /api/get-invoice
+ */
+export const getInvoice = async (req: Request, res: Response) => {
+  const { token } = req.body;
+  if (!token){
+    throw new Error('No token was sent in the request - node is not connected')
+  }
+
+  // get node instance
+  const node = getNodeByToken(token)
+
+  // get the invoice
+  const grpc = nodeManager.getRpc(node.token);
+  const { Lightning } = grpc.services;
+  const { payment_request: paymentRequest } = await Lightning.addInvoice({ value: 100 });
+  console.log(`paymentRequest: ${paymentRequest}`)
+
+  res.status(200)
+}

@@ -16,15 +16,16 @@ const ConnectForm = () => {
     "0201036c6e640267030a10d81e5394c4ce2bae069ba1c70387473f1201301a0c0a04696e666f1204726561641a170a08696e766f69636573120472656164120577726974651a160a076d657373616765120472656164120577726974651a100a086f6666636861696e1204726561640000062084d0cfc04f53f83ecccd723f413fb4792c271cebf3c12c994e9cd7a02380f4c4"
   );
 
-  const [ connect ] = useConnectMutation()
+  const [ connect, { error } ] = useConnectMutation()
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     try {
       await connect({ host, cert, macaroon }).unwrap();
       navigate("/dashboard");
-    } catch (error) {
-      console.error("error", error);
+    } catch (error: any) {
+      // copy this error handling logic to the other query, or find out how to use error from useConnectMutation above
+      error.data.error ? console.error(error.data.error) : console.error(error)
     }
   }
 

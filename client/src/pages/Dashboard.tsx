@@ -1,7 +1,10 @@
 import { useGetInfoQuery } from "../features/api/apiSlice";
 
 const Dashboard = () => {
-  const { data } = useGetInfoQuery();
+  const { data, error  } = useGetInfoQuery();
+  if (error) {
+    console.error(JSON.stringify(error))
+  }
 
   return (
     <div>
@@ -9,8 +12,8 @@ const Dashboard = () => {
       <p>Data:</p>
       {data && (
         <>
-          <p>{data.alias}</p>
-          <p>{data.balance}</p>
+          <p>alias: {data.alias}</p>
+          <p>balance: {data.balance}</p>
         </>
       )}
     </div>

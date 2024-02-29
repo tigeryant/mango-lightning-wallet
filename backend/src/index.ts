@@ -1,5 +1,5 @@
 import cors from 'cors';
-import express, { Express, Request, Response } from "express";
+import express, { Express, NextFunction, Request, Response } from "express";
 import * as routes from './routes';
 
 require('dotenv').config()
@@ -12,7 +12,7 @@ app.use(express.json());
 
 // simple middleware to grab the token from the header and add
 // it to the request's body
-app.use((req, res, next) => {
+app.use((req: Request, _: Response, next: NextFunction) => {
   req.body.token = req.header('X-Token');
   next();
 });
@@ -43,6 +43,7 @@ export const catchAsyncErrors = (
 //
 app.post('/api/connect', catchAsyncErrors(routes.connect));
 app.get('/api/info', catchAsyncErrors(routes.getInfo));
+app.get('/api/get-invoice', catchAsyncErrors(routes.getInvoice));
 
 app.get("/", (req: Request, res: Response) => {
   console.log(`${req.method} ${req.path} `)
