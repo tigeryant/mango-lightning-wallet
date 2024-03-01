@@ -1,7 +1,7 @@
 ## Overview
 * Web based lightning wallet explorer
 
-### Tech stask
+### Tech stack
 * React
 * TypeScript
 * Tailwind
@@ -9,7 +9,7 @@
 * Node.js
 * TypeScript
 * Express
-* (MongoDB? Postgres? mySQL?)
+* MongoDB
 
 * Polar
 * LND
