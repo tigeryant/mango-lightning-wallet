@@ -11,7 +11,10 @@ export const apiSlice = createApi({
     },
   }),
   endpoints: (builder) => ({
-    connect: builder.mutation< { token: string }, { host: string; cert: string; macaroon: string } >({
+    connect: builder.mutation<
+      { token: string },
+      { host: string; cert: string; macaroon: string }
+    >({
       query: (data) => ({
         url: "/connect",
         method: "POST",
@@ -21,7 +24,14 @@ export const apiSlice = createApi({
     getInfo: builder.query<{ alias: string; balance: number }, void>({
       query: () => "/info",
     }),
+    getInvoice: builder.mutation< { paymentRequest: string }, void >({
+    query: (data) => ({
+      url: "/get-invoice",
+      method: "POST",
+      body: data,
+    }),
+  }),
   }),
 });
 
-export const { useConnectMutation, useGetInfoQuery } = apiSlice;
+export const { useConnectMutation, useGetInfoQuery, useGetInvoiceMutation } = apiSlice;

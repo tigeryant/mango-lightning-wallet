@@ -49,7 +49,5 @@ export const getInvoice = async (req: Request, res: Response) => {
   const grpc = nodeManager.getRpc(node.token);
   const { Lightning } = grpc.services;
   const { payment_request: paymentRequest } = await Lightning.addInvoice({ value: 100 });
-  console.log(`paymentRequest: ${paymentRequest}`)
-
-  res.sendStatus(200)
+  res.status(200).send({ paymentRequest })
 }

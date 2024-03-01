@@ -1,7 +1,7 @@
 import React from "react";
-import type { RootState } from "../app/store";
-import { decrement, increment } from "../features/counter/counterSlice";
-import { useAppSelector, useAppDispatch } from '../app/hooks'
+import type { RootState } from "../redux/app/store";
+import { decrement, increment } from "../redux/features/counter/counterSlice";
+import { useAppSelector, useAppDispatch } from "../redux/app/hooks";
 
 const Counter = () => {
   const count = useAppSelector((state: RootState) => state.counter.value);
@@ -26,6 +26,6 @@ const Counter = () => {
       </div>
     </div>
   );
-}
+};
 
-export default Counter
+export default Counter;

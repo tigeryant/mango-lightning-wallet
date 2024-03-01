@@ -56,7 +56,7 @@ export const catchAsyncErrors = (
 //
 app.post("/api/connect", catchAsyncErrors(routes.connect));
 app.get("/api/info", catchAsyncErrors(routes.getInfo));
-app.get("/api/get-invoice", catchAsyncErrors(routes.getInvoice));
+app.post("/api/get-invoice", catchAsyncErrors(routes.getInvoice));
 
 app.get("/", (req: Request, res: Response) => {
   console.log(`${req.method} ${req.path} `);

@@ -95,7 +95,6 @@ class NodeManager extends EventEmitter {
    */
   // listenForPayments(rpc: LnRpc, pubkey: string) {
   listenForPayments(Lightning: any, pubkey: string) {
-    // const stream = rpc.subscribeInvoices();
     const stream = Lightning.subscribeInvoices();
     stream.on("data", (invoice) => {
       if (invoice.settled) {
