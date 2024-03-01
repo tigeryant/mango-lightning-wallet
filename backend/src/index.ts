@@ -1,19 +1,32 @@
-import cors from 'cors';
+import cors from "cors";
 import express, { Express, NextFunction, Request, Response } from "express";
-import * as routes from './routes';
+import * as routes from "./routes";
+import mongoose from "mongoose";
 
-require('dotenv').config()
-const port = process.env.PORT || 3001
+require("dotenv").config();
+const port = process.env.PORT || 3001;
 const app: Express = express();
 
 // Create express server
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
+
+// connect to db
+const dbURI = "mongodb://127.0.0.1:27017/mango";
+mongoose
+  .connect(dbURI)
+  .then(() => {
+    console.log("Connected to DB");
+    app.listen(port, () => {
+      console.log(`[server]: Server is running at http://localhost:${port}`);
+    });
+  })
+  .catch((error) => console.log(error));
 
 // simple middleware to grab the token from the header and add
 // it to the request's body
 app.use((req: Request, _: Response, next: NextFunction) => {
-  req.body.token = req.header('X-Token');
+  req.body.token = req.header("X-Token");
   next();
 });
 
@@ -23,7 +36,7 @@ app.use((req: Request, _: Response, next: NextFunction) => {
  * catch any async errors and return
  */
 export const catchAsyncErrors = (
-  routeHandler: (req: Request, res: Response) => Promise<void> | void,
+  routeHandler: (req: Request, res: Response) => Promise<void> | void
 ) => {
   // return a function that wraps the route handler in a try/catch block and
   // sends a response on error
@@ -41,15 +54,11 @@ export const catchAsyncErrors = (
 //
 // Configure Routes
 //
-app.post('/api/connect', catchAsyncErrors(routes.connect));
-app.get('/api/info', catchAsyncErrors(routes.getInfo));
-app.get('/api/get-invoice', catchAsyncErrors(routes.getInvoice));
+app.post("/api/connect", catchAsyncErrors(routes.connect));
+app.get("/api/info", catchAsyncErrors(routes.getInfo));
+app.get("/api/get-invoice", catchAsyncErrors(routes.getInvoice));
 
 app.get("/", (req: Request, res: Response) => {
-  console.log(`${req.method} ${req.path} `)
+  console.log(`${req.method} ${req.path} `);
   res.send("Express + TypeScript Server");
-});
-
-app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`);
 });

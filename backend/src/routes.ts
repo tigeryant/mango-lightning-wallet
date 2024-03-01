@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import nodeManager from "./node-manager";
-import { getNodeByToken } from "./databaseUtils/getNodeByToken";
-import writeNodeToDb from "./databaseUtils/writeNodeToDb";
+import getNodeByToken from "./databaseUtils/getNodeByToken";
+import addNode from "./databaseUtils/addNode";
 
 /**
  * POST /api/connect
@@ -9,11 +9,7 @@ import writeNodeToDb from "./databaseUtils/writeNodeToDb";
 export const connect = async (req: Request, res: Response) => {
   const { host, cert, macaroon } = req.body;
   const { token, pubkey } = await nodeManager.connect(host, cert, macaroon);
-  // we need to write some patch to bridge this functionality
-  // await db.addNode({ host, cert, macaroon, token, pubkey });
-
-  writeNodeToDb({ host, cert, macaroon, token, pubkey })
-
+  await addNode({ host, cert, macaroon, token, pubkey })
   res.status(200).send({ token });
 };
 
@@ -27,7 +23,7 @@ export const getInfo = async (req: Request, res: Response) => {
   }
   
   // get node instance
-  const node = getNodeByToken(token)
+  const node = await getNodeByToken(token)
   
   // get the node's pubkey and alias
   const grpc = nodeManager.getRpc(node.token);
@@ -47,7 +43,7 @@ export const getInvoice = async (req: Request, res: Response) => {
   }
 
   // get node instance
-  const node = getNodeByToken(token)
+  const node = await getNodeByToken(token)
 
   // get the invoice
   const grpc = nodeManager.getRpc(node.token);
@@ -55,5 +51,5 @@ export const getInvoice = async (req: Request, res: Response) => {
   const { payment_request: paymentRequest } = await Lightning.addInvoice({ value: 100 });
   console.log(`paymentRequest: ${paymentRequest}`)
 
-  res.status(200)
+  res.sendStatus(200)
 }

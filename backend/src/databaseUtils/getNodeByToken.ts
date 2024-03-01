@@ -1,21 +1,12 @@
-const path = require("path");
-import * as fs from "fs";
+import { LnNode, ILnNode } from '../models/LnNode'
+import { HydratedDocument } from 'mongoose'
 
-export function getNodeByToken(token: string) {
-  let data = ''
+export default async function getNodeByToken(token: string) {
   try {
-    // reading a JSON file synchronously
-    data = fs.readFileSync(path.resolve(__dirname, "../../data/nodes.json")).toString();
+    const lnNode: HydratedDocument<ILnNode> | null = await LnNode.findOne({ token: token });
+    if (!lnNode) throw new Error("Node not found with this token");
+    return lnNode
   } catch (error) {
-    console.error(error);
-    throw error;
+    throw(error)
   }
-  
-  // parsing the JSON content
-  const nodes = JSON.parse(data);
-  const node = nodes.find((node) => node.token === token)
-  
-  // const node = db.getNodeByToken(token);
-  if (!node) throw new Error("Node not found with this token");
-  return node
 }

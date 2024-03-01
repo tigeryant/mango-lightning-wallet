@@ -2,9 +2,6 @@ import { EventEmitter } from "events";
 import { v4 as uuidv4 } from "uuid";
 import LndGrpc from "lnd-grpc";
 
-// remove later
-import { inspect } from 'util' // or directly
-
 export const NodeEvents = {
   invoicePaid: "invoice-paid",
 };
@@ -21,8 +18,6 @@ class NodeManager extends EventEmitter {
    * Retrieves the in-memory connection to an LND node
    */
   getRpc(token: string): LndGrpc {
-    // remove later
-    console.log('in getRpc' + inspect(this._lndNodes))
     if (!this._lndNodes[token]) {
       throw new Error("Not Authorized. You must login first!");
     }
@@ -82,15 +77,12 @@ class NodeManager extends EventEmitter {
 
       // store this rpc connection in the in-memory list
       this._lndNodes[token] = grpc;
-      console.log('writing to in memory cache...')
-      console.log('in connect' + inspect(this._lndNodes))
 
       // return this node's token for future requests
       return { token, pubkey };
     } catch (err) {
       // remove the connection from the cache since it is not valid
       if (this._lndNodes[token]) {
-        console.log('deleting token')
         delete this._lndNodes[token];
       }
       throw err;
