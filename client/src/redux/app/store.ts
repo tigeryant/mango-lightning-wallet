@@ -1,17 +1,57 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import counterReducer from "../features/counter/counterSlice";
 import authReducer from "../features/auth/authSlice";
 import { apiSlice } from "../features/api/apiSlice";
+import storage from "redux-persist/lib/storage";
+import {
+  persistReducer,
+  persistStore,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
+
+const rootReducer = combineReducers({
+  counter: counterReducer,
+  auth: authReducer,
+  [apiSlice.reducerPath]: apiSlice.reducer,
+});
+
+const persistConfig = {
+  key: "root",
+  storage,
+  // will this work?
+  whitelist: ['counter', 'auth', `${[apiSlice.reducerPath]}`]
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = configureStore({
-  reducer: {
-    counter: counterReducer,
-    auth: authReducer,
-    [apiSlice.reducerPath]: apiSlice.reducer,
-  },
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(apiSlice.middleware),
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(apiSlice.middleware),
 });
+
+export const persistor = persistStore(store);
+
+// old version
+
+// export const store = configureStore({
+//   reducer: {
+//     counter: counterReducer,
+//     auth: authReducer,
+//     [apiSlice.reducerPath]: apiSlice.reducer,
+//   },
+//   middleware: (getDefaultMiddleware) =>
+//     getDefaultMiddleware().concat(apiSlice.middleware),
+// });
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
