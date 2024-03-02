@@ -10,8 +10,14 @@ const Dashboard = () => {
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center">
       <h1 className="font-bold mb-[30px]">Dashboard</h1>
-      <Link to="/receive" className="bg-blue-500 text-white rounded-lg p-[5px]">
+      <Link
+        to="/receive"
+        className="bg-blue-500 text-white rounded-lg p-[5px] mb-[5px]"
+      >
         Receive payment page
+      </Link>
+      <Link to="/send" className="bg-blue-500 text-white rounded-lg p-[5px]">
+        Send payment page
       </Link>
       <p className="mt-[40px]">Data:</p>
       {data && (
