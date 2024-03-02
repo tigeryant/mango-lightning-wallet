@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom";
-import Counter from "../components/Counter";
 
 const Landing = () => {
   return (
-    <div>
-      <h1 className="font-bold">Landing Page</h1>
-      <Link to="/signin" className="border border-black rounded-lg">
+    <div className="w-full h-screen flex flex-col justify-center items-center">
+      <h1 className="font-bold mb-[20px]">Landing Page</h1>
+      <Link
+        to="/signin"
+        className="p-[5px] rounded-lg bg-orange-400 text-white"
+      >
         Sign up or Login
       </Link>
-      <Counter />
     </div>
   );
 };

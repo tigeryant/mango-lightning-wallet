@@ -1,5 +1,4 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import counterReducer from "../features/counter/counterSlice";
 import authReducer from "../features/auth/authSlice";
 import { apiSlice } from "../features/api/apiSlice";
 import storage from "redux-persist/lib/storage";
@@ -15,7 +14,6 @@ import {
 } from "redux-persist";
 
 const rootReducer = combineReducers({
-  counter: counterReducer,
   auth: authReducer,
   [apiSlice.reducerPath]: apiSlice.reducer,
 });

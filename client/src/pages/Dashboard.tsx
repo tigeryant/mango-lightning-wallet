@@ -8,12 +8,9 @@ const Dashboard = () => {
   }
 
   return (
-    <>
-      <h1 className="font-bold">Dashboard</h1>
-      <Link
-        to="/receive"
-        className="bg-blue-500 text-white rounded-lg p-[5px] block"
-      >
+    <div className="w-full h-screen flex flex-col justify-center items-center">
+      <h1 className="font-bold mb-[30px]">Dashboard</h1>
+      <Link to="/receive" className="bg-blue-500 text-white rounded-lg p-[5px]">
         Receive payment page
       </Link>
       <p className="mt-[40px]">Data:</p>
@@ -23,7 +20,7 @@ const Dashboard = () => {
           <p>balance: {data.balance}</p>
         </>
       )}
-    </>
+    </div>
   );
 };
 
