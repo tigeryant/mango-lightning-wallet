@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../../app/store";
+const qrCode = require('qrcode');
 
 export const apiSlice = createApi({
   reducerPath: "api",
@@ -24,12 +25,23 @@ export const apiSlice = createApi({
     getInfo: builder.query<{ alias: string; balance: number }, void>({
       query: () => "/info",
     }),
-    getInvoice: builder.mutation< { paymentRequest: string }, void >({
+    getInvoice: builder.mutation< { paymentRequest: string, svg: string }, void >({
     query: (data) => ({
       url: "/get-invoice",
       method: "POST",
       body: data,
     }),
+    transformResponse: ({ paymentRequest }: { paymentRequest: string }) => {
+      let svg = ''
+      qrCode.toString(paymentRequest, {
+        errorCorrectionLevel: 'H',
+        type: 'svg'
+      }, function(err: any, data: string) {
+        if (err) throw err;
+        svg = data
+      });
+      return { paymentRequest, svg }
+    },
   }),
   }),
 });
