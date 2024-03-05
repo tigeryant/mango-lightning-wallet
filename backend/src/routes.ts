@@ -70,7 +70,6 @@ export async function payInvoice(req: Request, res: Response) {
   const { Router } = grpc.services;
 
   const paymentRequest = req.body.paymentRequest;
-  // const { status, payment_preimage: paymentPreimage } = await Router.sendPaymentV2({ payment_request: paymentRequest });
 
   let aggregatedResponse: any[] = []
   const call = Router.sendPaymentV2({ payment_request: paymentRequest, timeout_seconds: 5 });
@@ -87,7 +86,9 @@ export async function payInvoice(req: Request, res: Response) {
   });
   call.on('end', function() {
     // The server has closed the stream.
-    // just send status and preimage in final response?
-    res.status(200).send(aggregatedResponse);
+
+    if (aggregatedResponse.length > 0 && aggregatedResponse.slice(-1)[0].status === 'SUCCEEDED') {
+      res.status(200).send({ success: true });
+    }
   });
 }
