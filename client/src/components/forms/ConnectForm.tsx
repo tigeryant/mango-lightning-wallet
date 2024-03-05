@@ -24,7 +24,6 @@ const ConnectForm = () => {
       await connect({ host, cert, macaroon }).unwrap();
       navigate("/dashboard");
     } catch (error: any) {
-      // copy this error handling logic to the other query, or find out how to use error from useConnectMutation above
       error.data.error ? console.error(error.data.error) : console.error(error);
     }
   }
