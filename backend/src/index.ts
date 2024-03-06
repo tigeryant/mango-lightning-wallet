@@ -8,11 +8,13 @@ const port = process.env.PORT || 3001;
 const app: Express = express();
 
 // Create express server
-app.use(cors({ origin: "http://localhost:3000" }));
+const clientOrigin = `${process.env.CLIENT_ORIGIN}` 
+app.use(cors({ origin: clientOrigin }));
 app.use(express.json());
 
 // connect to db
-const dbURI = "mongodb://127.0.0.1:27017/mango";
+const dbURI = `${process.env.DB_URI}`
+
 mongoose
   .connect(dbURI)
   .then(() => {

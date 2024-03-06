@@ -8,13 +8,9 @@ const ConnectForm = () => {
   // const [macaroon, setMacaroon] = useState<string>("");
   const navigate = useNavigate();
 
-  const [host, setHost] = useState<string>("127.0.0.1:10004");
-  const [cert, setCert] = useState<string>(
-    "/Users/john/.polar/networks/2/volumes/lnd/bob/tls.cert"
-  );
-  const [macaroon, setMacaroon] = useState<string>(
-    "0201036c6e6402f801030a10d21e5394c4ce2bae069ba1c70387473f1201301a160a0761646472657373120472656164120577726974651a130a04696e666f120472656164120577726974651a170a08696e766f69636573120472656164120577726974651a210a086d616361726f6f6e120867656e6572617465120472656164120577726974651a160a076d657373616765120472656164120577726974651a170a086f6666636861696e120472656164120577726974651a160a076f6e636861696e120472656164120577726974651a140a057065657273120472656164120577726974651a180a067369676e6572120867656e6572617465120472656164000006204190a838afad1e96acb39931e6c3ea59fca48b1ac4bd6389670bd46888ab6671"
-  );
+  const [host, setHost] = useState<string>(`${process.env.REACT_APP_HOST}`);
+  const [cert, setCert] = useState<string>(`${process.env.REACT_APP_CERT}`);
+  const [macaroon, setMacaroon] = useState<string>(`${process.env.REACT_APP_MACAROON}`);
 
   const [connect, { error }] = useConnectMutation();
 
