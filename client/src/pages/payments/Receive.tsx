@@ -9,8 +9,10 @@ const Receive = () => {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    // add input validation
+    const value = parseInt(event.currentTarget.value.value)
     try {
-      await getInvoice();
+      await getInvoice({ value });
     } catch (error: any) {
       // copy this error handling logic to the other query, or find out how to use error from useConnectMutation above
       error.data.error ? console.error(error.data.error) : console.error(error);
@@ -20,7 +22,9 @@ const Receive = () => {
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center">
       <h1 className="font-bold mb-[30px]">Receive page</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="flex flex-col justify-center items-center">
+        <label>Value:</label>
+        <input id='value' className="border border-neutral-300 rounded-lg px-[3px] mb-[10px]"></input>
         <button
           className="bg-green-600 p-[5px] text-white rounded-lg mb-[20px]"
           type="submit"

@@ -47,10 +47,15 @@ export async function getInvoice(req: Request, res: Response) {
 
   const grpc = nodeManager.getRpc(node.token);
   const { Lightning } = grpc.services;
+
+  const value: number = req.body.value
+  // sanitise input
+  if (value === null || isNaN(value)) {
+    throw new Error("Invalid value parameter sent in the request body");
+  }
+
   // get the invoice
-  const { payment_request: paymentRequest } = await Lightning.addInvoice({
-    value: 100,
-  });
+  const { payment_request: paymentRequest } = await Lightning.addInvoice({ value });
   res.status(200).send({ paymentRequest });
 }
 

@@ -11,6 +11,7 @@ export const apiSlice = createApi({
       return headers;
     },
   }),
+  tagTypes: ['balance'],
   endpoints: (builder) => ({
     connect: builder.mutation<
       { token: string },
@@ -24,8 +25,9 @@ export const apiSlice = createApi({
     }),
     getInfo: builder.query<{ alias: string; balance: number }, void>({
       query: () => "/info",
+      providesTags: ['balance']
     }),
-    getInvoice: builder.mutation<{ paymentRequest: string; svg: string }, void>(
+    getInvoice: builder.mutation<{ paymentRequest: string; svg: string }, { value: number }>(
       {
         query: (data) => ({
           url: "/get-invoice",
@@ -55,6 +57,7 @@ export const apiSlice = createApi({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ['balance']
     }),
   }),
 });
