@@ -59,8 +59,12 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['balance']
     }),
+    // type this later - you can find the type with typeof keyof
+    listChannels: builder.query<{ channels: any[] }, void>({
+      query: () => "/list-channels",
+    }),
   }),
 });
 
-export const { useConnectMutation, useGetInfoQuery, useGetInvoiceMutation, useSendPaymentMutation } =
+export const { useConnectMutation, useGetInfoQuery, useGetInvoiceMutation, useSendPaymentMutation, useListChannelsQuery } =
   apiSlice;

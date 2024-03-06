@@ -5,6 +5,7 @@ import Connect from "./pages/Connect";
 import Dashboard from "./pages/Dashboard";
 import Receive from './pages/payments/Receive'
 import Send from './pages/payments/Send'
+import ListChannels from "./pages/channels/ListChannels";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="receive" element={<Receive />} />
           <Route path="send" element={<Send />} />
+          <Route path="list-channels" element={<ListChannels />} />
         </Route>
       </Routes>
   );
