@@ -24,7 +24,7 @@ The Lightning Network is a rapidly growing second layer payment protocol that wo
 ### Polar
 
 - Download Polar [here](https://lightningpolar.com/) - Polar is a tool for regtesting lightning networks
-- Set up a Polar network - learn about how to do this [here](https://docs.lightning.engineering/lapps/guides/polar-lapps/local-cluster-setup-with-polar)
+- Set up a local cluster - learn about how to do this [here](https://docs.lightning.engineering/lapps/guides/polar-lapps/local-cluster-setup-with-polar)
     - The network must have a Bitcoin node, two LND lightning nodes, and a channel between them with liquidity on both sides
 
 ### Database
