@@ -1,8 +1,10 @@
-import { useListChannelsQuery } from "../../redux/features/api/apiSlice";
+import {
+  useListChannelsQuery,
+} from "../../redux/features/api/apiSlice";
 import { Link } from "react-router-dom";
+import ChannelEntry from "./ChannelEntry";
 
 const ListChannels = () => {
-  // await this?
   const { data, error } = useListChannelsQuery();
   if (error) {
     console.error(JSON.stringify(error));
@@ -19,14 +21,13 @@ const ListChannels = () => {
       {channels &&
         channels.map((channel, index) => {
           return (
-            <div
-              className="w-[800px] border border-neutral-300 rounded-lg flex justify-between"
+            <ChannelEntry
+              chanId={channel.chan_id}
+              localBalance={channel.local_balance}
+              remoteBalance={channel.remote_balance}
+              remotePubkey={channel.remote_pubkey}
               key={index}
-            >
-              <span><strong>Channel id: </strong>{channel.chan_id}</span>
-              <span><strong>Local balance: </strong>{channel.local_balance}</span>
-              <span><strong>Remote balance: </strong>{channel.remote_balance}</span>
-            </div>
+            />
           );
         })}
       <Link
