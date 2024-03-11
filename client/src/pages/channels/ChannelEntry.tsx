@@ -12,32 +12,18 @@ const ChannelEntry = ({
   if (error) {
     console.error(JSON.stringify(error));
   }
-  let alias = ''
+  let alias = "";
   if (data) {
-    alias = data.node.alias
+    alias = data.node.alias;
   }
 
   return (
-    <div className="w-[800px] border border-neutral-300 rounded-lg flex justify-between">
-      {data &&
-        <span>
-          <strong>Alias: </strong>
-          {alias}
-        </span>
-      }
-      <span>
-        <strong>Channel id: </strong>
-        {chanId}
-      </span>
-      <span>
-        <strong>Local balance: </strong>
-        {localBalance}
-      </span>
-      <span>
-        <strong>Remote balance: </strong>
-        {remoteBalance}
-      </span>
-    </div>
+    <tr className="border border-neutral-300">
+      <td>{data ? alias : ""}</td>
+      <td>{chanId}</td>
+      <td>{localBalance}</td>
+      <td>{remoteBalance}</td>
+    </tr>
   );
 };
 
