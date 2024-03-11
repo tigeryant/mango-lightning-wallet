@@ -61,6 +61,8 @@ app.get("/api/info", catchAsyncErrors(routes.getInfo));
 app.post("/api/get-invoice", catchAsyncErrors(routes.getInvoice));
 app.post("/api/pay-invoice", catchAsyncErrors(routes.payInvoice));
 app.get("/api/list-channels", catchAsyncErrors(routes.listChannels));
+app.get("/api/get-node-info", catchAsyncErrors(routes.getNodeInfo));
+app.get("/api/test", catchAsyncErrors(routes.test));
 
 app.get("/", (req: Request, res: Response) => {
   console.log(`${req.method} ${req.path} `);

@@ -11,7 +11,7 @@ export const apiSlice = createApi({
       return headers;
     },
   }),
-  tagTypes: ['balance'],
+  tagTypes: ["balance"],
   endpoints: (builder) => ({
     connect: builder.mutation<
       { token: string },
@@ -25,46 +25,66 @@ export const apiSlice = createApi({
     }),
     getInfo: builder.query<{ alias: string; balance: number }, void>({
       query: () => "/info",
-      providesTags: ['balance']
+      providesTags: ["balance"],
     }),
-    getInvoice: builder.mutation<{ paymentRequest: string; svg: string }, { value: number }>(
-      {
-        query: (data) => ({
-          url: "/get-invoice",
-          method: "POST",
-          body: data,
-        }),
-        transformResponse: ({ paymentRequest }: { paymentRequest: string }) => {
-          let svg = "";
-          qrCode.toString(
-            paymentRequest,
-            {
-              errorCorrectionLevel: "H",
-              type: "svg",
-            },
-            function (err: any, data: string) {
-              if (err) throw err;
-              svg = data;
-            }
-          );
-          return { paymentRequest, svg };
-        },
-      }
-    ),
-    sendPayment: builder.mutation< { success: boolean }, { paymentRequest: string } >({
+    getInvoice: builder.mutation<
+      { paymentRequest: string; svg: string },
+      { value: number }
+    >({
+      query: (data) => ({
+        url: "/get-invoice",
+        method: "POST",
+        body: data,
+      }),
+      transformResponse: ({ paymentRequest }: { paymentRequest: string }) => {
+        let svg = "";
+        qrCode.toString(
+          paymentRequest,
+          {
+            errorCorrectionLevel: "H",
+            type: "svg",
+          },
+          function (err: any, data: string) {
+            if (err) throw err;
+            svg = data;
+          }
+        );
+        return { paymentRequest, svg };
+      },
+    }),
+    sendPayment: builder.mutation<
+      { success: boolean },
+      { paymentRequest: string }
+    >({
       query: (data) => ({
         url: "/pay-invoice",
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ['balance']
+      invalidatesTags: ["balance"],
     }),
     // type this later - you can find the type with typeof keyof
     listChannels: builder.query<{ channels: any[] }, void>({
       query: () => "/list-channels",
     }),
+    // type this later - you can find the type with typeof keyof
+    getNodeInfo: builder.query<{ node: any }, { pubKey: string }>({
+      query: (args) => {
+        const { pubKey } = args;
+        return {
+          url: "/get-node-info",
+          params: { pubKey },
+        };
+      },
+    }),
   }),
 });
 
-export const { useConnectMutation, useGetInfoQuery, useGetInvoiceMutation, useSendPaymentMutation, useListChannelsQuery } =
-  apiSlice;
+export const {
+  useConnectMutation,
+  useGetInfoQuery,
+  useGetInvoiceMutation,
+  useSendPaymentMutation,
+  useListChannelsQuery,
+  useGetNodeInfoQuery,
+} = apiSlice;
