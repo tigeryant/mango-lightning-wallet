@@ -110,7 +110,6 @@ export async function payInvoice(req: Request, res: Response) {
  * GET /api/list-channels
  */
 export async function listChannels(req: Request, res: Response) {
-  console.log("function called!");
   const { token } = req.body;
   if (!token) {
     throw new Error("No token was sent in the request - node is not connected");
