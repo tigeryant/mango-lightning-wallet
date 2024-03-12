@@ -1,6 +1,6 @@
 import { useListChannelsQuery } from "../../redux/features/api/apiSlice";
 import { Link } from "react-router-dom";
-import ChannelEntry from "./ChannelEntry";
+import ChannelRow from "./ChannelRow";
 
 const ListChannels = () => {
   const { data, error } = useListChannelsQuery();
@@ -21,18 +21,20 @@ const ListChannels = () => {
             <th>Alias</th>
             <th>Channel ID</th>
             <th>Local balance</th>
-            <th>Remote balance</th>
+            <th className="text-center">Capacity</th>
+            <th className="text-right">Remote balance</th>
           </tr>
         </thead>
         <tbody>
           {channels &&
             channels.map((channel, index) => {
               return (
-                <ChannelEntry
+                <ChannelRow
                   chanId={channel.chan_id}
                   localBalance={channel.local_balance}
                   remoteBalance={channel.remote_balance}
                   remotePubkey={channel.remote_pubkey}
+                  channelCapacity={channel.capacity}
                   key={index}
                 />
               );
