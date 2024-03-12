@@ -148,6 +148,57 @@ export async function getNodeInfo(req: Request, res: Response) {
 }
 
 /**
+ * POST /api/open-channel
+ */
+export async function openChannel(req: Request, res: Response) {
+  const { token } = req.body;
+  if (!token) {
+    throw new Error("No token was sent in the request - node is not connected");
+  }
+
+  // get node instance
+  const node = await getNodeByToken(token);
+
+  // const pubKey = req.query.pubKey;
+
+  // get the node's pubkey and alias
+  const grpc = nodeManager.getRpc(node.token);
+  const { Lightning } = grpc.services;
+
+  let aggregatedResponse: any[] = [];
+
+  const call = Lightning.openChannel({
+    node_pubkey: Buffer.from('03e5f9a35b4df97b267778d8a31716426515901d80b1dfc677210078e2c09f034e', 'hex'),
+    local_funding_amount: 100000,
+    push_sat: 20000
+  });
+  call.on("data", function (currentResponse) {
+    // A response was received from the server.
+    console.log(`currentResponse:\n${JSON.stringify(currentResponse)}`)
+    aggregatedResponse.push(currentResponse);
+  });
+  call.on("error", function (error) {
+    // An error has occurred and the stream has been closed.
+    res.status(400).send(error);
+  });
+  call.on("status", function (status) {
+    // The current status of the stream.
+  });
+  call.on("end", function () {
+    // The server has closed the stream.
+    console.log('end of stream')
+
+    // if (
+    //   aggregatedResponse.length > 0 &&
+    //   aggregatedResponse.slice(-1)[0].status === "SUCCEEDED"
+    // ) {
+      // shouldn't be able to send this if error was already sent - too many responses sent - either error or send success
+      res.status(200).send({ success: true });
+    // }
+  });
+}
+
+/**
  * GET /api/test
  * temporary route for testing - no token required in request header
  */

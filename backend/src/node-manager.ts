@@ -69,7 +69,7 @@ class NodeManager extends EventEmitter {
       const rHashJson = JSON.parse(JSON.stringify(r_hash));
       const rHash = Buffer.from(rHashJson.data);
 
-      // zap verify we have permission to lookup invoices
+      // verify we have permission to lookup invoices
       await Lightning.lookupInvoice({ r_hash: rHash }); // change back to rHash
 
       // listen for payments from LND
