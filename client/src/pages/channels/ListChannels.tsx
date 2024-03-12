@@ -15,7 +15,7 @@ const ListChannels = () => {
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center">
       <h1 className="font-bold mb-[30px]">List Channels Page</h1>
-      <table className="table-auto w-[800px] border border-neutral-300">
+      <table className="w-[800px] border border-neutral-300">
         <thead className="text-left">
           <tr>
             <th>Alias</th>

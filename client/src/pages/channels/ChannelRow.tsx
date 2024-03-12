@@ -24,7 +24,7 @@ const ChannelRow = ({
 
   return (
     <>
-      <tr className="border border-neutral-300">
+      <tr className="border-x border-t border-neutral-300 pt-[5px]">
         <td>{data ? alias : ""}</td>
         <td>{chanId}</td>
         <td>{localBalance}</td>
@@ -40,6 +40,7 @@ const ChannelRow = ({
             customLabel=" "
             baseBgColor="blue"
             bgColor="orange"
+            height="10px"
           />
         </td>
       </tr>
