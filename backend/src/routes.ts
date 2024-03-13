@@ -188,13 +188,13 @@ export async function openChannel(req: Request, res: Response) {
     // The server has closed the stream.
     console.log('end of stream')
 
-    // if (
-    //   aggregatedResponse.length > 0 &&
-    //   aggregatedResponse.slice(-1)[0].status === "SUCCEEDED"
-    // ) {
+    if (
+      aggregatedResponse.length > 0 &&
+      aggregatedResponse.slice(-1)[0].update === "chan_open"
+    ) {
       // shouldn't be able to send this if error was already sent - too many responses sent - either error or send success
       res.status(200).send({ success: true });
-    // }
+    }
   });
 }
 

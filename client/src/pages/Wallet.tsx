@@ -6,7 +6,9 @@ import { Link } from "react-router-dom";
 const Wallet = () => {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
-  const { data, error, refetch, isUninitialized } = useNewAddressQuery(isSubmitted ? undefined : skipToken);
+  const { data, error, refetch, isUninitialized } = useNewAddressQuery(
+    isSubmitted ? undefined : skipToken
+  );
   if (error) {
     console.error(JSON.stringify(error));
   }
@@ -38,6 +40,10 @@ const Wallet = () => {
           {data.address}
         </p>
       )}
+      <p className="mb-[10px]">
+        Bitcoin deposited to this address can be used to open lightning
+        channels.
+      </p>
       <Link
         to="/dashboard"
         className="bg-blue-500 text-white rounded-lg p-[5px]"
