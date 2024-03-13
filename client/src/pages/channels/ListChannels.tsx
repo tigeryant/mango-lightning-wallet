@@ -1,11 +1,19 @@
-import { useListChannelsQuery } from "../../redux/features/api/apiSlice";
+import {
+  useListChannelsQuery,
+  useOpenChannelMutation,
+} from "../../redux/features/api/apiSlice";
 import { Link } from "react-router-dom";
 import ChannelRow from "./ChannelRow";
 
 const ListChannels = () => {
-  const { data, error } = useListChannelsQuery();
-  if (error) {
-    console.error(JSON.stringify(error));
+  const [openChannel, { error: openError }] = useOpenChannelMutation();
+  if (openError) {
+    console.error(JSON.stringify(openError));
+  }
+
+  const { data, error: listError } = useListChannelsQuery();
+  if (listError) {
+    console.error(JSON.stringify(listError));
   }
   let channels: any[] = [];
   if (data) {
@@ -15,6 +23,12 @@ const ListChannels = () => {
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center">
       <h1 className="font-bold mb-[30px]">List Channels Page</h1>
+      <button
+        className="bg-green-600 text-white rounded-lg p-[5px] mb-[10px]"
+        onClick={() => openChannel()}
+      >
+        Open Channel
+      </button>
       <table className="w-[800px] border border-neutral-300">
         <thead className="text-left">
           <tr>

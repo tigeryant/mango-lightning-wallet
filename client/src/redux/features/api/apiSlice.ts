@@ -11,7 +11,7 @@ export const apiSlice = createApi({
       return headers;
     },
   }),
-  tagTypes: ["balance"],
+  tagTypes: ["balance", "channels"],
   endpoints: (builder) => ({
     connect: builder.mutation<
       { token: string },
@@ -66,6 +66,7 @@ export const apiSlice = createApi({
     // type this later - you can find the type with typeof keyof
     listChannels: builder.query<{ channels: any[] }, void>({
       query: () => "/list-channels",
+      providesTags: ["channels"]
     }),
     // type this later - you can find the type with typeof keyof
     getNodeInfo: builder.query<{ node: any }, { pubKey: string }>({
@@ -80,6 +81,17 @@ export const apiSlice = createApi({
     newAddress: builder.query<{ address: string }, void>({
       query: () => "/new-address",
     }),
+    openChannel: builder.mutation<
+    { success: boolean },
+    void
+  >({
+    query: (data) => ({
+      url: "/open-channel",
+      method: "POST",
+      body: data,
+    }),
+    invalidatesTags: ["channels"],
+  }),
   }),
 });
 
@@ -90,5 +102,6 @@ export const {
   useSendPaymentMutation,
   useListChannelsQuery,
   useGetNodeInfoQuery,
-  useNewAddressQuery
+  useNewAddressQuery,
+  useOpenChannelMutation
 } = apiSlice;
