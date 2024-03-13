@@ -16,11 +16,23 @@ const Dashboard = () => {
       >
         Receive payment page
       </Link>
-      <Link to="/send" className="bg-blue-500 text-white rounded-lg p-[5px] mb-[5px]">
+      <Link
+        to="/send"
+        className="bg-blue-500 text-white rounded-lg p-[5px] mb-[5px]"
+      >
         Send payment page
       </Link>
-      <Link to="/list-channels" className="bg-orange-500 text-white rounded-lg p-[5px]">
+      <Link
+        to="/list-channels"
+        className="bg-orange-500 text-white rounded-lg p-[5px] mb-[5px]"
+      >
         List channels page
+      </Link>
+      <Link
+        to="/wallet"
+        className="bg-orange-500 text-white rounded-lg p-[5px]"
+      >
+        Wallet page
       </Link>
       <p className="mt-[40px]">Data:</p>
       {data && (

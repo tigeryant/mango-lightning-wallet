@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import Receive from './pages/payments/Receive'
 import Send from './pages/payments/Send'
 import ListChannels from "./pages/channels/ListChannels";
+import Wallet from "./pages/Wallet";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="receive" element={<Receive />} />
           <Route path="send" element={<Send />} />
           <Route path="list-channels" element={<ListChannels />} />
+          <Route path="wallet" element={<Wallet />} />
         </Route>
       </Routes>
   );

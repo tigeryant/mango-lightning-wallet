@@ -77,6 +77,9 @@ export const apiSlice = createApi({
         };
       },
     }),
+    newAddress: builder.query<{ address: string }, void>({
+      query: () => "/new-address",
+    }),
   }),
 });
 
@@ -87,4 +90,5 @@ export const {
   useSendPaymentMutation,
   useListChannelsQuery,
   useGetNodeInfoQuery,
+  useNewAddressQuery
 } = apiSlice;
