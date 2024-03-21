@@ -4,6 +4,11 @@ import getNodeByToken from "./databaseUtils/getNodeByToken";
 import addNode from "./databaseUtils/addNode";
 import WebSocket from "ws";
 
+process.on('uncaughtException', function (err) {
+  console.error(err);
+  console.log("Node NOT Exiting...");
+});
+
 /**
  * POST /api/connect
  */
@@ -157,16 +162,23 @@ export async function openChannel(req: Request, res: Response) {
     throw new Error("No token was sent in the request - node is not connected");
   }
 
+  const pubkey = req.body.pubkey;
+  const fundingAmount = req.body.fundingAmount
+  const pushSat = req.body.pushSat
+
+  if (typeof pubkey !== 'string' || typeof fundingAmount !== 'number' || typeof pushSat !== 'number') {
+    res.sendStatus(400)
+    return
+  }
+
   // get node instance
   const node = await getNodeByToken(token);
-
-  // const pubKey = req.query.pubKey;
 
   // get the node's pubkey and alias
   const grpc = nodeManager.getRpc(node.token);
   const { Lightning } = grpc.services;
 
-  // this try/catch does not work
+  // this try/catch does not work (because of async)
   let wss: any
   try {
     wss = new WebSocket.Server({ port: 8080 }); // ws://localhost:8080
@@ -177,14 +189,13 @@ export async function openChannel(req: Request, res: Response) {
   const server = wss._server;
   res.status(200).send({ success: true });
 
-  // update by using variables passed from the client
   const call = Lightning.openChannel({
     node_pubkey: Buffer.from(
-      "03e5f9a35b4df97b267778d8a31716426515901d80b1dfc677210078e2c09f034e",
+      pubkey,
       "hex"
     ),
-    local_funding_amount: 100000,
-    push_sat: 20000,
+    local_funding_amount: fundingAmount,
+    push_sat: pushSat,
   });
 
   wss.on("connection", (ws) => {

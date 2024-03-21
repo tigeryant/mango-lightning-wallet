@@ -83,7 +83,7 @@ export const apiSlice = createApi({
     newAddress: builder.query<{ address: string }, void>({
       query: () => "/new-address",
     }),
-    openChannel: builder.mutation<{ success: boolean }, void>({
+    openChannel: builder.mutation< { success: boolean }, { pubkey: string; fundingAmount: number, pushSat: number } >({
       query: (data) => ({
         url: "/open-channel",
         method: "POST",
@@ -95,28 +95,28 @@ export const apiSlice = createApi({
         arg,
         { cacheDataLoaded, cacheEntryRemoved, dispatch }
       ) {
-        console.log('connecting to WS')
-        setTimeout(async function() {
+        console.log("connecting to WS");
+        setTimeout(async function () {
           // replace with environment variable
-          const ws = new WebSocket("ws://localhost:8080")
+          const ws = new WebSocket("ws://localhost:8080");
           try {
             await cacheDataLoaded;
             ws.onmessage = (event: MessageEvent) => {
               const data = JSON.parse(event.data);
-              dispatch(setChannelState(data))
-            }
+              dispatch(setChannelState(data));
+            };
             ws.onerror = (error) => {
-              console.error(error)
-            }
+              console.error(error);
+            };
             ws.onclose = () => {
-              console.log('websocket closed')
-            }
+              console.log("websocket closed");
+            };
           } catch (err) {
             console.error(`error: ${err}`);
           }
           await cacheEntryRemoved;
           ws.close();
-        }, 100)
+        }, 100);
       },
     }),
   }),
