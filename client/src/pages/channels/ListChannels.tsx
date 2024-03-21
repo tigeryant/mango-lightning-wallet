@@ -1,6 +1,4 @@
-import {
-  useListChannelsQuery,
-} from "../../redux/features/api/apiSlice";
+import { useListChannelsQuery } from "../../redux/features/api/apiSlice";
 import { Link } from "react-router-dom";
 import ChannelRow from "./ChannelRow";
 import { useAppSelector } from "../../redux/app/hooks";
@@ -19,31 +17,35 @@ const ListChannels = () => {
 
   const channelStatus = useAppSelector((state) => state.channels.channelState);
   console.log(`channelStatus.update: ${channelStatus.update}`);
-  const channelPending = channelStatus.update === "chan_pending"
-  const channelOpen = channelStatus.update === "chan_open"
+  const channelPending = channelStatus.update === "chan_pending";
+  const channelOpen = channelStatus.update === "chan_open";
 
   useEffect(() => {
     if (channelOpen) {
-      refetch()
+      refetch();
     }
-  }, [channelOpen])
+  }, [channelOpen]);
 
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center">
       <h1 className="font-bold mb-[30px]">List Channels Page</h1>
-      <div className="flex justify-between w-[450px]">
+      <div className="flex justify-between w-[800px] h-[300px]">
         <ChannelOpen />
-        <p><strong>Status:</strong></p>
-        {channelPending && (
-          <div className="bg-yellow-500 px-[10px] py-[5px] text-orange rounded-lg mb-[10px]">
-            Channel open pending
-          </div>
-        )}
-        {channelOpen && (
-          <div className="bg-green-600 px-[10px] py-[5px] text-white rounded-lg mb-[10px]">
-            Channel is open!
-          </div>
-        )}
+        <div className="flex items-center">
+          <p>
+            <strong>Status:</strong>
+          </p>
+          {channelPending && (
+            <div className="bg-yellow-500 px-[10px] py-[5px] text-orange rounded-lg h-fit">
+              Channel pending
+            </div>
+          )}
+          {channelOpen && (
+            <div className="bg-green-600 px-[10px] py-[5px] text-white rounded-lg h-fit">
+              Channel opened
+            </div>
+          )}
+        </div>
       </div>
       <table className="w-[800px] border border-neutral-300">
         <thead className="text-left">
