@@ -1,17 +1,14 @@
 import {
   useListChannelsQuery,
-  useOpenChannelMutation,
 } from "../../redux/features/api/apiSlice";
 import { Link } from "react-router-dom";
 import ChannelRow from "./ChannelRow";
+import { useAppSelector } from "../../redux/app/hooks";
+import ChannelOpen from "../../components/buttons/ChannelOpen";
+import { useEffect } from "react";
 
 const ListChannels = () => {
-  const [openChannel, { error: openError }] = useOpenChannelMutation();
-  if (openError) {
-    console.error(JSON.stringify(openError));
-  }
-
-  const { data, error: listError } = useListChannelsQuery();
+  const { data, error: listError, refetch } = useListChannelsQuery();
   if (listError) {
     console.error(JSON.stringify(listError));
   }
@@ -20,15 +17,34 @@ const ListChannels = () => {
     channels = data.channels;
   }
 
+  const channelStatus = useAppSelector((state) => state.channels.channelState);
+  console.log(`channelStatus.update: ${channelStatus.update}`);
+  const channelPending = channelStatus.update === "chan_pending"
+  const channelOpen = channelStatus.update === "chan_open"
+
+  useEffect(() => {
+    if (channelOpen) {
+      refetch()
+    }
+  }, [channelOpen])
+
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center">
       <h1 className="font-bold mb-[30px]">List Channels Page</h1>
-      <button
-        className="bg-green-600 text-white rounded-lg p-[5px] mb-[10px]"
-        onClick={() => openChannel()}
-      >
-        Open Channel
-      </button>
+      <div className="flex justify-between w-[450px]">
+        <ChannelOpen />
+        <p><strong>Status:</strong></p>
+        {channelPending && (
+          <div className="bg-yellow-500 px-[10px] py-[5px] text-orange rounded-lg mb-[10px]">
+            Channel open pending
+          </div>
+        )}
+        {channelOpen && (
+          <div className="bg-green-600 px-[10px] py-[5px] text-white rounded-lg mb-[10px]">
+            Channel is open!
+          </div>
+        )}
+      </div>
       <table className="w-[800px] border border-neutral-300">
         <thead className="text-left">
           <tr>

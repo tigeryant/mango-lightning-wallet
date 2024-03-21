@@ -1,6 +1,8 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import authReducer from "../features/auth/authSlice";
 import { apiSlice } from "../features/api/apiSlice";
+import { channelsSlice } from "../features/channels/channelsSlice";
+import channelsReducer from "../features/channels/channelsSlice";
 import storage from "redux-persist/lib/storage";
 import {
   persistReducer,
@@ -15,6 +17,7 @@ import {
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  channels: channelsReducer,
   [apiSlice.reducerPath]: apiSlice.reducer,
 });
 

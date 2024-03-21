@@ -1,11 +1,11 @@
 import cors from "cors";
 import express, { Express, NextFunction, Request, Response } from "express";
-import * as routes from "./routes";
 import mongoose from "mongoose";
 
 require("dotenv").config();
 const port = process.env.PORT || 3001;
-const app: Express = express();
+var app = express();
+import * as routes from "./routes";
 
 // Create express server
 const clientOrigin = `${process.env.CLIENT_ORIGIN}` 

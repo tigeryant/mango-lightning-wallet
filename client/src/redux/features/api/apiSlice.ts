@@ -1,5 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../../app/store";
+import { setChannelState } from "../channels/channelsSlice";
+
 const qrCode = require("qrcode");
 
 export const apiSlice = createApi({
@@ -66,7 +68,7 @@ export const apiSlice = createApi({
     // type this later - you can find the type with typeof keyof
     listChannels: builder.query<{ channels: any[] }, void>({
       query: () => "/list-channels",
-      providesTags: ["channels"]
+      providesTags: ["channels"],
     }),
     // type this later - you can find the type with typeof keyof
     getNodeInfo: builder.query<{ node: any }, { pubKey: string }>({
@@ -81,17 +83,42 @@ export const apiSlice = createApi({
     newAddress: builder.query<{ address: string }, void>({
       query: () => "/new-address",
     }),
-    openChannel: builder.mutation<
-    { success: boolean },
-    void
-  >({
-    query: (data) => ({
-      url: "/open-channel",
-      method: "POST",
-      body: data,
+    openChannel: builder.mutation<{ success: boolean }, void>({
+      query: (data) => ({
+        url: "/open-channel",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["channels"],
+      // could use queryFulfilled here??
+      async onCacheEntryAdded(
+        arg,
+        { cacheDataLoaded, cacheEntryRemoved, dispatch }
+      ) {
+        console.log('connecting to WS')
+        setTimeout(async function() {
+          // replace with environment variable
+          const ws = new WebSocket("ws://localhost:8080")
+          try {
+            await cacheDataLoaded;
+            ws.onmessage = (event: MessageEvent) => {
+              const data = JSON.parse(event.data);
+              dispatch(setChannelState(data))
+            }
+            ws.onerror = (error) => {
+              console.error(error)
+            }
+            ws.onclose = () => {
+              console.log('websocket closed')
+            }
+          } catch (err) {
+            console.error(`error: ${err}`);
+          }
+          await cacheEntryRemoved;
+          ws.close();
+        }, 100)
+      },
     }),
-    invalidatesTags: ["channels"],
-  }),
   }),
 });
 
@@ -103,5 +130,5 @@ export const {
   useListChannelsQuery,
   useGetNodeInfoQuery,
   useNewAddressQuery,
-  useOpenChannelMutation
+  useOpenChannelMutation,
 } = apiSlice;

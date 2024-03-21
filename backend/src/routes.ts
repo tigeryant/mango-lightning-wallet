@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import nodeManager from "./node-manager";
 import getNodeByToken from "./databaseUtils/getNodeByToken";
 import addNode from "./databaseUtils/addNode";
+import WebSocket from "ws";
 
 /**
  * POST /api/connect
@@ -165,36 +166,47 @@ export async function openChannel(req: Request, res: Response) {
   const grpc = nodeManager.getRpc(node.token);
   const { Lightning } = grpc.services;
 
-  let aggregatedResponse: any[] = [];
+  // this try/catch does not work
+  let wss: any
+  try {
+    wss = new WebSocket.Server({ port: 8080 }); // ws://localhost:8080
+  } catch(error) {
+    console.error(error)
+    res.status(400).send(error)
+  }
+  const server = wss._server;
+  res.status(200).send({ success: true });
 
+  // update by using variables passed from the client
   const call = Lightning.openChannel({
-    node_pubkey: Buffer.from('03e5f9a35b4df97b267778d8a31716426515901d80b1dfc677210078e2c09f034e', 'hex'),
+    node_pubkey: Buffer.from(
+      "03e5f9a35b4df97b267778d8a31716426515901d80b1dfc677210078e2c09f034e",
+      "hex"
+    ),
     local_funding_amount: 100000,
-    push_sat: 20000
+    push_sat: 20000,
   });
-  call.on("data", function (currentResponse) {
-    // A response was received from the server.
-    console.log(`currentResponse:\n${JSON.stringify(currentResponse)}`)
-    aggregatedResponse.push(currentResponse);
-  });
-  call.on("error", function (error) {
-    // An error has occurred and the stream has been closed.
-    res.status(400).send(error);
-  });
-  call.on("status", function (status) {
-    // The current status of the stream.
-  });
-  call.on("end", function () {
-    // The server has closed the stream.
-    console.log('end of stream')
 
-    if (
-      aggregatedResponse.length > 0 &&
-      aggregatedResponse.slice(-1)[0].update === "chan_open"
-    ) {
-      // shouldn't be able to send this if error was already sent - too many responses sent - either error or send success
-      res.status(200).send({ success: true });
-    }
+  wss.on("connection", (ws) => {
+    console.log("Client connected");
+
+    call.on("data", function (response: any) {
+      console.log(`response.update: ${response.update}`);
+      ws.send(JSON.stringify(response));
+    });
+    call.on("error", function (error) {
+      console.error(`error:\n${error}`);
+      ws.send(
+        JSON.stringify({ "error": "An error ocurred opening the channel" })
+      );
+      ws.close()
+      server.close();
+    });
+    call.on("end", function () {
+      console.log("websocket closed - end of LND stream");
+      ws.close();
+      server.close();
+    });
   });
 }
 
