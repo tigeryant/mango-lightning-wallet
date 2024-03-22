@@ -91,6 +91,14 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["channels"],
       // could use queryFulfilled here??
+      async onQueryStarted(
+        arg,
+        {
+          dispatch,
+        }
+      ) {
+        dispatch(setChannelState(''))
+      },
       async onCacheEntryAdded(
         arg,
         { cacheDataLoaded, cacheEntryRemoved, dispatch }
@@ -102,7 +110,7 @@ export const apiSlice = createApi({
           try {
             await cacheDataLoaded;
             ws.onmessage = (event: MessageEvent) => {
-              const data = JSON.parse(event.data);
+              const data = event.data;
               dispatch(setChannelState(data));
             };
             ws.onerror = (error) => {

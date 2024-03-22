@@ -16,9 +16,9 @@ const ListChannels = () => {
   }
 
   const channelStatus = useAppSelector((state) => state.channels.channelState);
-  console.log(`channelStatus.update: ${channelStatus.update}`);
-  const channelPending = channelStatus.update === "chan_pending";
-  const channelOpen = channelStatus.update === "chan_open";
+  console.log(`channelStatus: ${channelStatus}`);
+  const channelPending = channelStatus === "chan_pending";
+  const channelOpen = channelStatus === "chan_open";
 
   useEffect(() => {
     if (channelOpen) {

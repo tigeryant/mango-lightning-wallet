@@ -203,7 +203,7 @@ export async function openChannel(req: Request, res: Response) {
 
     call.on("data", function (response: any) {
       console.log(`response.update: ${response.update}`);
-      ws.send(JSON.stringify(response));
+      ws.send(response.update);
     });
     call.on("error", function (error) {
       console.error(`error:\n${error}`);
