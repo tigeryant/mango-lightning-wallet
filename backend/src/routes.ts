@@ -222,6 +222,62 @@ export async function openChannel(req: Request, res: Response) {
 }
 
 /**
+ * POST /api/close-channel
+ */
+export async function closeChannel(req: Request, res: Response) {
+  const { token } = req.body;
+  if (!token) {
+    throw new Error("No token was sent in the request - node is not connected");
+  }
+
+  console.log(`req.body: ${JSON.stringify(req.body)}`)
+
+  const channelPoint = req.body.channelPoint.split(":");
+  const fundingTxid = channelPoint[0]
+  const outputIndex = channelPoint[1]
+
+  // get node instance
+  const node = await getNodeByToken(token);
+
+  // get the node's pubkey and alias
+  const grpc = nodeManager.getRpc(node.token);
+  const { Lightning } = grpc.services;
+
+  const wss: any = new WebSocket.Server({ port: 8080 }); // ws://localhost:8080
+  const server = wss._server;
+  res.status(200).send({ success: true });
+
+  const call = Lightning.closeChannel({
+    channel_point: {
+      funding_txid_str: fundingTxid,
+      output_index: outputIndex
+    }
+  });
+
+  wss.on("connection", (ws) => {
+    console.log("Client connected");
+
+    call.on("data", function (response: any) {
+      console.log(`response.update: ${response.update}`);
+      ws.send(response.update);
+    });
+    call.on("error", function (error) {
+      console.error(`error:\n${error}`);
+      ws.send(
+        JSON.stringify({ "error": "An error ocurred closing the channel" })
+      );
+      ws.close()
+      server.close();
+    });
+    call.on("end", function () {
+      console.log("websocket closed - end of LND stream");
+      ws.close();
+      server.close();
+    });
+  });
+}
+
+/**
  * GET /api/new-address
  */
 export async function newAddress(req: Request, res: Response) {

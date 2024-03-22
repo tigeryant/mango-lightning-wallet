@@ -1,6 +1,6 @@
 import { useOpenChannelMutation } from "../../redux/features/api/apiSlice";
 
-const ChannelOpen = () => {
+const OpenChannel = () => {
   const [openChannel] = useOpenChannelMutation();
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -42,4 +42,4 @@ const ChannelOpen = () => {
   );
 };
 
-export default ChannelOpen;
+export default OpenChannel;

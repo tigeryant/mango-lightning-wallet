@@ -1,5 +1,6 @@
 import { useGetNodeInfoQuery } from "../../redux/features/api/apiSlice";
 import ProgressBar from "@ramonak/react-progress-bar";
+import CloseChannel from "../../components/buttons/CloseChannel";
 
 const ChannelRow = ({
   chanId,
@@ -7,6 +8,7 @@ const ChannelRow = ({
   remoteBalance,
   remotePubkey,
   channelCapacity,
+  channelPoint
 }) => {
   const { data, error } = useGetNodeInfoQuery({
     pubKey: remotePubkey,
@@ -30,6 +32,7 @@ const ChannelRow = ({
         <td>{localBalance}</td>
         <td className="text-center">{channelCapacity}</td>
         <td className="text-right">{remoteBalance}</td>
+        <td className="text-right"><CloseChannel channelPoint={channelPoint} /></td>
       </tr>
       <tr>
         <td colSpan={2}></td>
@@ -43,6 +46,7 @@ const ChannelRow = ({
             height="10px"
           />
         </td>
+        <td colSpan={1}></td>
       </tr>
     </>
   );

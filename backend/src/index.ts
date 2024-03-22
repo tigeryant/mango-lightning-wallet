@@ -63,6 +63,7 @@ app.post("/api/pay-invoice", catchAsyncErrors(routes.payInvoice));
 app.get("/api/list-channels", catchAsyncErrors(routes.listChannels));
 app.get("/api/get-node-info", catchAsyncErrors(routes.getNodeInfo));
 app.post("/api/open-channel", catchAsyncErrors(routes.openChannel));
+app.post("/api/close-channel", catchAsyncErrors(routes.closeChannel));
 app.get("/api/new-address", catchAsyncErrors(routes.newAddress));
 app.get("/api/test", catchAsyncErrors(routes.test));
 

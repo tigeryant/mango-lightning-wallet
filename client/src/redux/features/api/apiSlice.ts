@@ -89,7 +89,6 @@ export const apiSlice = createApi({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["channels"],
       // could use queryFulfilled here??
       async onQueryStarted(
         arg,
@@ -117,6 +116,43 @@ export const apiSlice = createApi({
               console.error(error);
             };
             ws.onclose = () => {
+              dispatch(apiSlice.util.invalidateTags(['channels']))
+              console.log("websocket closed");
+            };
+          } catch (err) {
+            console.error(`error: ${err}`);
+          }
+          await cacheEntryRemoved;
+          ws.close();
+        }, 100);
+      },
+    }),
+    closeChannel: builder.mutation< { success: boolean }, { channelPoint: string } >({
+      query: (data) => ({
+        url: "/close-channel",
+        method: "POST",
+        body: data,
+      }),
+      async onCacheEntryAdded(
+        arg,
+        { cacheDataLoaded, cacheEntryRemoved, dispatch }
+      ) {
+        console.log("connecting to WS");
+        setTimeout(async function () {
+          // replace with environment variable
+          const ws = new WebSocket("ws://localhost:8080");
+          try {
+            await cacheDataLoaded;
+            ws.onmessage = (event: MessageEvent) => {
+              const data = event.data;
+              console.log(`data: ${data}`)
+              // dispatch(setChannelState(data));
+            };
+            ws.onerror = (error) => {
+              console.error(error);
+            };
+            ws.onclose = () => {
+              dispatch(apiSlice.util.invalidateTags(['channels']))
               console.log("websocket closed");
             };
           } catch (err) {
@@ -139,4 +175,5 @@ export const {
   useGetNodeInfoQuery,
   useNewAddressQuery,
   useOpenChannelMutation,
+  useCloseChannelMutation,
 } = apiSlice;

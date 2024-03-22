@@ -2,11 +2,10 @@ import { useListChannelsQuery } from "../../redux/features/api/apiSlice";
 import { Link } from "react-router-dom";
 import ChannelRow from "./ChannelRow";
 import { useAppSelector } from "../../redux/app/hooks";
-import ChannelOpen from "../../components/buttons/ChannelOpen";
-import { useEffect } from "react";
+import OpenChannel from "../../components/buttons/OpenChannel";
 
 const ListChannels = () => {
-  const { data, error: listError, refetch } = useListChannelsQuery();
+  const { data, error: listError } = useListChannelsQuery();
   if (listError) {
     console.error(JSON.stringify(listError));
   }
@@ -20,17 +19,11 @@ const ListChannels = () => {
   const channelPending = channelStatus === "chan_pending";
   const channelOpen = channelStatus === "chan_open";
 
-  useEffect(() => {
-    if (channelOpen) {
-      refetch();
-    }
-  }, [channelOpen]);
-
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center">
       <h1 className="font-bold mb-[30px]">List Channels Page</h1>
       <div className="flex justify-between w-[800px] h-[300px]">
-        <ChannelOpen />
+        <OpenChannel />
         <div className="flex items-center">
           <p>
             <strong>Status:</strong>
@@ -55,6 +48,7 @@ const ListChannels = () => {
             <th>Local balance</th>
             <th className="text-center">Capacity</th>
             <th className="text-right">Remote balance</th>
+            <th className="text-right">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -67,6 +61,7 @@ const ListChannels = () => {
                   remoteBalance={channel.remote_balance}
                   remotePubkey={channel.remote_pubkey}
                   channelCapacity={channel.capacity}
+                  channelPoint={channel.channel_point}
                   key={index}
                 />
               );

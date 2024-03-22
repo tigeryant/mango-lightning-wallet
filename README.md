@@ -13,7 +13,7 @@ The Lightning Network is a rapidly growing second layer payment protocol that wo
 - Receive a payment over lightning
 - View channels
 - Open channels
-- Close channels (coming soon)
+- Close channels
 
 
 ## Set up and installation
