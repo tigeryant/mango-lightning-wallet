@@ -162,9 +162,7 @@ export async function openChannel(req: Request, res: Response) {
     throw new Error("No token was sent in the request - node is not connected");
   }
 
-  const pubkey = req.body.pubkey;
-  const fundingAmount = req.body.fundingAmount
-  const pushSat = req.body.pushSat
+  const { pubkey, fundingAmount, pushSat } = req.body
 
   if (typeof pubkey !== 'string' || typeof fundingAmount !== 'number' || typeof pushSat !== 'number') {
     res.sendStatus(400)
@@ -178,14 +176,7 @@ export async function openChannel(req: Request, res: Response) {
   const grpc = nodeManager.getRpc(node.token);
   const { Lightning } = grpc.services;
 
-  // this try/catch does not work (because of async)
-  let wss: any
-  try {
-    wss = new WebSocket.Server({ port: 8080 }); // ws://localhost:8080
-  } catch(error) {
-    console.error(error)
-    res.status(400).send(error)
-  }
+  const wss: any = new WebSocket.Server({ port: 8080 }); // ws://localhost:8080
   const server = wss._server;
   res.status(200).send({ success: true });
 
@@ -232,9 +223,7 @@ export async function closeChannel(req: Request, res: Response) {
 
   console.log(`req.body: ${JSON.stringify(req.body)}`)
 
-  const channelPoint = req.body.channelPoint.split(":");
-  const fundingTxid = channelPoint[0]
-  const outputIndex = channelPoint[1]
+  const [fundingTxid, outputIndex] = req.body.channelPoint.split(":");
 
   // get node instance
   const node = await getNodeByToken(token);
