@@ -15,5 +15,4 @@ export const apiSlice = createApi({
   }),
 });
 
-// export const {} = apiSlice;
 export const {} = apiSlice;
