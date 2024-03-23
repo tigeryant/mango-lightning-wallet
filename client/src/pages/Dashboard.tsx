@@ -1,4 +1,4 @@
-import { useGetInfoQuery } from "../redux/features/api/apiSlice";
+import { useGetInfoQuery } from "../redux/features/info/infoSlice";
 import { Link } from "react-router-dom";
 
 const Dashboard = () => {

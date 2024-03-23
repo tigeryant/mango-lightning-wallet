@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNewAddressQuery } from "../redux/features/api/apiSlice";
+import { useNewAddressQuery } from "../redux/features/addresses/addressesSlice";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { Link } from "react-router-dom";
 

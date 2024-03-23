@@ -38,6 +38,7 @@ const Receive = () => {
         <img
           className="h-[350px]"
           src={`data:image/svg+xml;utf8,${encodeURIComponent(data.svg)}`}
+          alt='QR code'
         />
       )}
             <Link

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../app/store";
-import { apiSlice } from "../api/apiSlice";
+import { extendedApiSlice } from "../connection/connectionSlice";
 
 interface AuthState {
   token: string;
@@ -21,7 +21,7 @@ export const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addMatcher(
-      apiSlice.endpoints.connect.matchFulfilled,
+      extendedApiSlice.endpoints.connect.matchFulfilled,
       (state, { payload }) => {
         state.token = payload.token;
       }

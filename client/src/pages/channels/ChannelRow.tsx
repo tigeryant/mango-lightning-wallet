@@ -1,4 +1,4 @@
-import { useGetNodeInfoQuery } from "../../redux/features/api/apiSlice";
+import { useGetNodeInfoQuery } from "../../redux/features/info/infoSlice";
 import ProgressBar from "@ramonak/react-progress-bar";
 import CloseChannel from "../../components/buttons/CloseChannel";
 

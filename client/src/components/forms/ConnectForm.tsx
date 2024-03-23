@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useConnectMutation } from "../../redux/features/api/apiSlice";
+import { useConnectMutation } from "../../redux/features/connection/connectionSlice";
 
 const ConnectForm = () => {
   // const [host, setHost] = useState<string>("");
