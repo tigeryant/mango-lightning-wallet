@@ -1,4 +1,4 @@
-import { useListChannelsQuery } from "../../redux/features/api/apiSlice";
+import { useListChannelsQuery } from "../../redux/features/channels/channelsSlice";
 import { Link } from "react-router-dom";
 import ChannelRow from "./ChannelRow";
 import { useAppSelector } from "../../redux/app/hooks";

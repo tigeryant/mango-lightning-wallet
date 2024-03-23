@@ -1,5 +1,5 @@
 import React from 'react'
-import { useCloseChannelMutation } from '../../redux/features/api/apiSlice'
+import { useCloseChannelMutation } from '../../redux/features/channels/channelsSlice'
 
 const CloseChannel = ({ channelPoint }: { channelPoint: string }) => {
   const [closeChannel] = useCloseChannelMutation();

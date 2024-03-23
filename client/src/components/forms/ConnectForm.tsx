@@ -12,7 +12,7 @@ const ConnectForm = () => {
   const [cert, setCert] = useState<string>(`${process.env.REACT_APP_CERT}`);
   const [macaroon, setMacaroon] = useState<string>(`${process.env.REACT_APP_MACAROON}`);
 
-  const [connect, { error }] = useConnectMutation();
+  const [connect] = useConnectMutation();
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -20,7 +20,7 @@ const ConnectForm = () => {
       await connect({ host, cert, macaroon }).unwrap();
       navigate("/dashboard");
     } catch (error: any) {
-      error.data.error ? console.error(error.data.error) : console.error(error);
+      console.error(error)
     }
   }
 

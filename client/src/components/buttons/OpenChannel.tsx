@@ -1,4 +1,4 @@
-import { useOpenChannelMutation } from "../../redux/features/api/apiSlice";
+import { useOpenChannelMutation } from "../../redux/features/channels/channelsSlice";
 
 const OpenChannel = () => {
   const [openChannel] = useOpenChannelMutation();
