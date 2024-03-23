@@ -1,11 +1,21 @@
+import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
-import express, { Express, NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
+import connectionRouter from './routes/connection'
+import infoRouter from './routes/info'
+import invoicesRouter from './routes/invoices'
+import channelsRouter from './routes/channels'
+import addressesRouter from './routes/addresses'
+import testRouter from './routes/test'
 
 require("dotenv").config();
 const port = process.env.PORT || 3001;
 var app = express();
-import * as routes from "./routes";
+
+process.on('uncaughtException', function (err) {
+  console.error(err);
+  console.log("Node NOT Exiting...");
+});
 
 // Create express server
 const clientOrigin = `${process.env.CLIENT_ORIGIN}` 
@@ -18,9 +28,9 @@ const dbURI = `${process.env.DB_URI}`
 mongoose
   .connect(dbURI)
   .then(() => {
-    console.log("Connected to DB");
+    console.log("[server] Connected to DB");
     app.listen(port, () => {
-      console.log(`[server]: Server is running at http://localhost:${port}`);
+      console.log(`[server] Server is running at http://localhost:${port}`);
     });
   })
   .catch((error) => console.log(error));
@@ -56,18 +66,9 @@ export const catchAsyncErrors = (
 //
 // Configure Routes
 //
-app.post("/api/connect", catchAsyncErrors(routes.connect));
-app.get("/api/info", catchAsyncErrors(routes.getInfo));
-app.post("/api/get-invoice", catchAsyncErrors(routes.getInvoice));
-app.post("/api/pay-invoice", catchAsyncErrors(routes.payInvoice));
-app.get("/api/list-channels", catchAsyncErrors(routes.listChannels));
-app.get("/api/get-node-info", catchAsyncErrors(routes.getNodeInfo));
-app.post("/api/open-channel", catchAsyncErrors(routes.openChannel));
-app.post("/api/close-channel", catchAsyncErrors(routes.closeChannel));
-app.get("/api/new-address", catchAsyncErrors(routes.newAddress));
-app.get("/api/test", catchAsyncErrors(routes.test));
-
-app.get("/", (req: Request, res: Response) => {
-  console.log(`${req.method} ${req.path} `);
-  res.send("Express + TypeScript Server");
-});
+app.use("/api/connect", catchAsyncErrors(connectionRouter));
+app.use("/api/info", catchAsyncErrors(infoRouter));
+app.use("/api/invoice", catchAsyncErrors(invoicesRouter));
+app.use("/api/channels", catchAsyncErrors(channelsRouter));
+app.use("/api/addresses", catchAsyncErrors(addressesRouter));
+app.get("/api/test", catchAsyncErrors(testRouter));

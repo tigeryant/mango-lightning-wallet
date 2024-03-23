@@ -11,7 +11,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
       query: (args) => {
         const { pubKey } = args;
         return {
-          url: "/get-node-info",
+          url: "/info/node",
           params: { pubKey },
         };
       },

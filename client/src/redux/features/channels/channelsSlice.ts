@@ -25,12 +25,12 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
   endpoints: builder => ({
     // type this later - you can find the type with typeof keyof
     listChannels: builder.query<{ channels: any[] }, void>({
-      query: () => "/list-channels",
+      query: () => "/channels/list",
       providesTags: ["channels"],
     }),
     openChannel: builder.mutation< { success: boolean }, { pubkey: string; fundingAmount: number, pushSat: number } >({
       query: (data) => ({
-        url: "/open-channel",
+        url: "/channels/open",
         method: "POST",
         body: data,
       }),
@@ -74,7 +74,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
     }),
     closeChannel: builder.mutation< { success: boolean }, { channelPoint: string } >({
       query: (data) => ({
-        url: "/close-channel",
+        url: "/channels/close",
         method: "POST",
         body: data,
       }),

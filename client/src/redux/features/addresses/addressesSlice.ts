@@ -3,7 +3,7 @@ import { apiSlice } from '../api/apiSlice'
 export const extendedApiSlice = apiSlice.injectEndpoints({
   endpoints: builder => ({
     newAddress: builder.query<{ address: string }, void>({
-      query: () => "/new-address",
+      query: () => "/addresses/new",
     }),
   })
 })

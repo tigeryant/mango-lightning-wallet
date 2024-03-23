@@ -9,7 +9,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
       { value: number }
     >({
       query: (data) => ({
-        url: "/get-invoice",
+        url: "/invoice/get",
         method: "POST",
         body: data,
       }),
@@ -34,7 +34,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
       { paymentRequest: string }
     >({
       query: (data) => ({
-        url: "/pay-invoice",
+        url: "/invoice/pay",
         method: "POST",
         body: data,
       }),
