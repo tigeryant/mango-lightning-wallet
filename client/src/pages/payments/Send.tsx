@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, Form } from "react-router-dom";
-import { useSendPaymentMutation } from "../../redux/features/api/apiSlice";
+import { useSendPaymentMutation } from "../../redux/features/invoices/invoicesSlice";
 
 const Send = () => {
   const [sendPayment, { data, isSuccess, error, isError }] =

@@ -1,8 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../../app/store";
 
-const qrCode = require("qrcode");
-
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
@@ -28,42 +26,6 @@ export const apiSlice = createApi({
       query: () => "/info",
       providesTags: ["balance"],
     }),
-    getInvoice: builder.mutation<
-      { paymentRequest: string; svg: string },
-      { value: number }
-    >({
-      query: (data) => ({
-        url: "/get-invoice",
-        method: "POST",
-        body: data,
-      }),
-      transformResponse: ({ paymentRequest }: { paymentRequest: string }) => {
-        let svg = "";
-        qrCode.toString(
-          paymentRequest,
-          {
-            errorCorrectionLevel: "H",
-            type: "svg",
-          },
-          function (err: any, data: string) {
-            if (err) throw err;
-            svg = data;
-          }
-        );
-        return { paymentRequest, svg };
-      },
-    }),
-    sendPayment: builder.mutation<
-      { success: boolean },
-      { paymentRequest: string }
-    >({
-      query: (data) => ({
-        url: "/pay-invoice",
-        method: "POST",
-        body: data,
-      }),
-      invalidatesTags: ["balance"],
-    }),
     // type this later - you can find the type with typeof keyof
     getNodeInfo: builder.query<{ node: any }, { pubKey: string }>({
       query: (args) => {
@@ -83,8 +45,6 @@ export const apiSlice = createApi({
 export const {
   useConnectMutation,
   useGetInfoQuery,
-  useGetInvoiceMutation,
-  useSendPaymentMutation,
   useGetNodeInfoQuery,
   useNewAddressQuery,
 } = apiSlice;

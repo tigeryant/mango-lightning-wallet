@@ -1,5 +1,5 @@
 import React from "react";
-import { useGetInvoiceMutation } from "../../redux/features/api/apiSlice";
+import { useGetInvoiceMutation } from "../../redux/features/invoices/invoicesSlice";
 import { Link } from "react-router-dom";
 
 const Receive = () => {
