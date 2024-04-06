@@ -1,7 +1,7 @@
 import { useOpenChannelMutation } from "../../redux/features/channels/channelsSlice";
 
 const OpenChannel = () => {
-  const [openChannel] = useOpenChannelMutation();
+  const [openChannel ] = useOpenChannelMutation();
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const pubkey = event.currentTarget.pubkey.value

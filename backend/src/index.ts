@@ -14,10 +14,10 @@ const port = process.env.PORT || 3001;
 // Create express server
 var app = express();
 
-process.on('uncaughtException', function (err) {
-  console.error(err);
-  console.log("Node NOT Exiting...");
-});
+// process.on('uncaughtException', function (err) {
+//   console.error(err);
+//   console.log("Node NOT Exiting...");
+// });
 
 const clientOrigin = `${process.env.CLIENT_ORIGIN}` 
 app.use(cors({ origin: clientOrigin }));

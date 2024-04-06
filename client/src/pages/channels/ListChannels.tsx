@@ -19,6 +19,12 @@ const ListChannels = () => {
   const channelPending = channelStatus === "chan_pending";
   const channelOpen = channelStatus === "chan_open";
 
+  const channelSuccess = useAppSelector((state) => state.channels.success);
+  let channelFailed
+  if (channelSuccess === false) {
+    channelFailed = true
+  }
+
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center">
       <h1 className="font-bold mb-[30px]">List Channels Page</h1>
@@ -36,6 +42,11 @@ const ListChannels = () => {
           {channelOpen && (
             <div className="bg-green-600 px-[10px] py-[5px] text-white rounded-lg h-fit">
               Channel opened
+            </div>
+          )}
+          {channelFailed && (
+            <div className="bg-red-600 px-[10px] py-[5px] text-white rounded-lg h-fit">
+              Channel failed
             </div>
           )}
         </div>

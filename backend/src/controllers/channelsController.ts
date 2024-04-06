@@ -32,11 +32,15 @@ export async function openChannel(req: Request, res: Response) {
     throw new Error("No token was sent in the request - node is not connected");
   }
 
-  const { pubkey, fundingAmount, pushSat } = req.body
+  const { pubkey, fundingAmount, pushSat } = req.body;
 
-  if (typeof pubkey !== 'string' || typeof fundingAmount !== 'number' || typeof pushSat !== 'number') {
-    res.sendStatus(400)
-    return
+  if (
+    typeof pubkey !== "string" ||
+    typeof fundingAmount !== "number" ||
+    typeof pushSat !== "number"
+  ) {
+    res.sendStatus(400);
+    return;
   }
 
   // get node instance
@@ -48,17 +52,34 @@ export async function openChannel(req: Request, res: Response) {
 
   const wss: any = new WebSocket.Server({ port: 8080 }); // ws://localhost:8080
   const server = wss._server;
-  
-  res.status(200).send({ success: true });
 
-  const call = Lightning.openChannel({
-    node_pubkey: Buffer.from(
-      pubkey,
-      "hex"
-      ),
+  let call: any
+  try {
+    call = await Lightning.openChannel({
+      node_pubkey: Buffer.from(pubkey, "hex"),
       local_funding_amount: fundingAmount,
       push_sat: pushSat,
     });
+  } catch(err) {
+    console.error(err)
+    server.close()
+    res.status(500).send({ success: false })
+  }
+
+  call.on("error", function (error) {
+    console.error(error);
+    server.close()
+    res.status(500).send({ success: false })
+    // is this necessary?
+    res.end()
+  });
+
+  setTimeout(() => {
+    if(!res.headersSent) {
+      console.log('sending 200')
+      res.status(200).send({ success: true });
+    }
+  }, 1000)
 
   wss.on("connection", (ws) => {
     console.log("Client connected");
@@ -70,11 +91,14 @@ export async function openChannel(req: Request, res: Response) {
     call.on("error", function (error) {
       console.error(`error:\n${error}`);
       ws.send(
-        JSON.stringify({ "error": "An error ocurred opening the channel" })
+        JSON.stringify({ error: "An error ocurred opening the channel" })
       );
-      ws.close()
+      ws.close();
       server.close();
     });
+    call.on("status", function (status) {
+      console.log(`status: ${JSON.stringify(status)}`)
+    })
     call.on("end", function () {
       console.log("websocket closed - end of LND stream");
       ws.close();
@@ -92,7 +116,7 @@ export async function closeChannel(req: Request, res: Response) {
     throw new Error("No token was sent in the request - node is not connected");
   }
 
-  console.log(`req.body: ${JSON.stringify(req.body)}`)
+  console.log(`req.body: ${JSON.stringify(req.body)}`);
 
   const [fundingTxid, outputIndex] = req.body.channelPoint.split(":");
 
@@ -110,8 +134,8 @@ export async function closeChannel(req: Request, res: Response) {
   const call = Lightning.closeChannel({
     channel_point: {
       funding_txid_str: fundingTxid,
-      output_index: outputIndex
-    }
+      output_index: outputIndex,
+    },
   });
 
   wss.on("connection", (ws) => {
@@ -124,9 +148,9 @@ export async function closeChannel(req: Request, res: Response) {
     call.on("error", function (error) {
       console.error(`error:\n${error}`);
       ws.send(
-        JSON.stringify({ "error": "An error ocurred closing the channel" })
+        JSON.stringify({ error: "An error ocurred closing the channel" })
       );
-      ws.close()
+      ws.close();
       server.close();
     });
     call.on("end", function () {
